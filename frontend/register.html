@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Register | Kanyakumari Tourism</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script id="tailwind-config">
+      tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "secondary-container": "#fd8b00", "on-secondary-container": "#603100", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
+    </script>
+</head>
+<body class="bg-surface font-body h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
+        <div class="text-center mb-8">
+            <a href="index.html" class="font-headline text-2xl font-bold text-primary">Kanyakumari</a>
+            <h1 class="text-2xl font-bold mt-6 mb-2">Create an Account</h1>
+            <p class="text-on-surface-variant text-sm">Join us to manage your tours and tickets.</p>
+        </div>
+
+        <form id="registerForm" class="space-y-6">
+            <div>
+                <label class="block text-sm font-bold mb-2 text-on-surface-variant">Email Address</label>
+                <input id="email" type="email" required class="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="tourist@example.com">
+            </div>
+            <div>
+                <label class="block text-sm font-bold mb-2 text-on-surface-variant">Password</label>
+                <input id="password" type="password" required class="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="Minimum 6 characters">
+            </div>
+            
+            <p id="errorMessage" class="text-red-500 text-sm hidden text-center"></p>
+
+            <button type="submit" id="submitBtn" class="w-full bg-primary text-white font-bold py-4 rounded-lg shadow-md hover:opacity-90 transition-opacity">
+                Create Account
+            </button>
+        </form>
+
+        <p class="text-center mt-8 text-sm text-on-surface-variant">
+            Already have an account? <a href="login.html" class="text-primary font-bold hover:underline">Log in here</a>
+        </p>
+    </div>
+
+    <script>
+        
+        const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent page reload
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('submitBtn');
+            const errorMsg = document.getElementById('errorMessage');
+
+            btn.innerText = "Creating account...";
+            errorMsg.classList.add('hidden');
+
+          
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                errorMsg.innerText = error.message;
+                errorMsg.classList.remove('hidden');
+                btn.innerText = "Create Account";
+            } else {
+                btn.innerText = "Success! Redirecting...";
+                btn.style.backgroundColor = "green";
+                // Send them to the dashboard!
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>
