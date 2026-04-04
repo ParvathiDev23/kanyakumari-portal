@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Attractions | Kanyakumari</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "on-primary": "#ffffff", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
+    </script>
+</head>
+<body class="bg-surface font-body">
+
+<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md shadow-sm">
+    <div class="flex justify-between items-center px-12 py-6 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="font-headline text-2xl font-bold text-[#00509d]">Kanyakumari</a>
+        <div class="hidden md:flex gap-8 font-headline text-lg">
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="index.html">Home</a>
+            <a class="text-[#00509d] font-bold border-b-2 border-[#00509d] pb-1" href="attractions.html">Attractions</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="history.html">History</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="markets.html">Markets</a>
+        </div>
+        <a href="booking.html" class="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:opacity-90">Book Now</a>
+    </div>
+</nav>
+
+<main class="pt-32 pb-24 px-12 max-w-screen-2xl mx-auto">
+    <h2 class="font-headline text-5xl text-primary font-bold mb-12">Iconic Landmarks</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        <div class="group flex flex-col bg-white p-4 rounded-xl shadow-lg">
+            <div class="relative aspect-[4/5] overflow-hidden rounded-xl mb-6">
+                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVt22dJ2c1k9PTn3btI_v8eM_loseZSJlG-3rCsCGBSgGK1u-0CUSvQ1Ue9LwgDgg3egVz8pLcxSET4OVAFT0r4f1Mc0wx5KKt3h_zvP4-UaXn_Fja4Qf7Cs0cr25jP7mTJSqVFdo-aU5qquLLqpqJZScF-TkTTN7cyZhLupey6yD8npFhJUhCxC1AjUjOzfMANeuLXwIZNc03KyPum8cMQoH_Y9_YhfYhh_CHS56FkQkvHvlrwmtRpTKdqeiZi1qFliM-hpzaZ4M"/>
+            </div>
+            <h3 class="font-headline text-2xl font-bold text-primary mb-3">Vivekananda Rock Memorial</h3>
+            <p class="text-on-surface-variant mb-6 flex-grow">A sacred island monument where Swami Vivekananda attained enlightenment.</p>
+            <a href="booking.html" class="w-full text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90">Book Tour</a>
+        </div>
+
+        <div class="group flex flex-col bg-white p-4 rounded-xl shadow-lg">
+            <div class="relative aspect-[4/5] overflow-hidden rounded-xl mb-6">
+                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWsaCUgf1zU6PnJT3OrhqXebEUKcBT0MK6wXahknOzbovN-0BIW0e69tzoeKAPhiLzmF3NNk0-VQnZPqRQPfoVCHEv7uC6kfwZHAAadQxTJwZ32a_7-JIriQsTenbrPQALs_BxG9umYuv3RTIsjpah2sVDFLFU4Gx8SSJgqydGgsxTTY_WHDWfPZlKJ0gp6RYvOJV_9Y9ygU_brE-R405DtXkoJIlVQeL36v8EfCJ6xku3I7e8k5GXZxdT_zxMiF90LqLjNlP0ilQ"/>
+            </div>
+            <h3 class="font-headline text-2xl font-bold text-primary mb-3">Thiruvalluvar Statue</h3>
+            <p class="text-on-surface-variant mb-6 flex-grow">A 133-foot stone sculpture dedicated to the legendary Tamil poet.</p>
+            <a href="booking.html" class="w-full text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90">Book Tour</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

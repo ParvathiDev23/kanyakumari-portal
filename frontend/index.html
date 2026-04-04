@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Kanyakumari | Where Three Seas Meet</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script class="hidden" id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+              "primary": "#003974", "on-primary": "#ffffff", "surface": "#f8f9fa",
+              "on-surface": "#191c1d", "secondary-container": "#fd8b00", "on-secondary-container": "#603100",
+              "surface-container-low": "#f3f4f5", "on-surface-variant": "#424751", "secondary": "#904d00"
+            },
+            "fontFamily": { "headline": ["Noto Serif", "serif"], "body": ["Manrope", "sans-serif"], "label": ["Manrope", "sans-serif"] }
+          },
+        },
+      }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .editorial-shadow { box-shadow: 0 20px 40px rgba(0, 27, 61, 0.06); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+
+<nav class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-md shadow-[0_20px_40px_rgba(0,27,61,0.06)]">
+    <div class="flex justify-between items-center px-12 py-6 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="font-headline text-2xl font-bold tracking-tighter text-[#00509d]">Kanyakumari</a>
+        <div class="hidden md:flex items-center space-x-8 font-headline text-lg tracking-tight">
+            <a class="text-[#00509d] font-bold border-b-2 border-[#00509d] pb-1" href="index.html">Home</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="attractions.html">Attractions</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="history.html">History</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="markets.html">Markets</a>
+        </div>
+        <a href="booking.html" class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label font-bold text-sm tracking-wide uppercase transition-all hover:scale-105">Book Now</a>
+    </div>
+</nav>
+
+<main>
+    <section class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img alt="Majestic sunrise at Vivekananda Rock Memorial" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPw7WjwR7xLX7OI1q3pgYXfMe5ONJhBfnJ9tNvsXlLvRBhS2o2XLpkrJDVKbvRpxSgJ7Pj0ppSZnNw9h_K3TBlR1h4Z9UDxr5kkts0A8utTW0RJ7iuiIhyXky2Iv6QSlH9w24CABec37vQGGDhnENn5Yl6G9PxP8aWi-qfdK-6xGb-cFLSLQo4M3VFwcDIti92M2dDl4D0vUh3up1k5wFFIuaXbJiwCWy-mymZ-ukMGYCohKB2GPMCIzIZKIgk8k5baD7IEYpPsKA"/>
+            <div class="absolute inset-0 bg-black/50 backdrop-brightness-75"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-primary/40 via-transparent to-primary/60"></div>
+        </div>
+        <div class="relative z-10 text-center px-6">
+            <span class="block font-label text-white/90 text-sm tracking-[0.3em] uppercase mb-4 drop-shadow-md">The Southernmost Tip of India</span>
+            <h1 class="font-headline text-6xl md:text-8xl text-white font-bold tracking-tighter mb-8 max-w-4xl mx-auto leading-tight drop-shadow-lg">Where Three Seas Meet</h1>
+            <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+                <a href="attractions.html" class="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-all">Explore Destinations</a>
+                <a href="booking.html" class="text-white border-b-2 border-white/50 hover:border-white py-2 px-4 transition-all font-semibold">Watch the Sunrise</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 px-12 bg-surface-container-low relative overflow-hidden">
+        <div class="max-w-screen-xl mx-auto text-center relative z-10">
+            <h2 class="font-headline text-5xl md:text-6xl text-primary font-bold mb-8">Your Coastal Journey Awaits</h2>
+            <p class="text-on-surface-variant text-xl font-light mb-12 max-w-2xl mx-auto">Join our expert guides for a sunset tour of the memorial, local market explorations, and a journey into history.</p>
+            <div class="flex gap-6 justify-center">
+                <a href="booking.html" class="bg-secondary-container text-on-secondary-container px-10 py-5 rounded-lg font-bold text-xl hover:scale-105 transition-all">Book Sunrise Tour</a>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
