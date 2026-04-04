@@ -60,20 +60,31 @@
             btn.innerText = "Creating account...";
             errorMsg.classList.add('hidden');
 
-          
+            // Talk to Supabase
             const { data, error } = await supabase.auth.signUp({
                 email: email,
                 password: password,
             });
 
+            // LOG THE RESULTS FOR DEBUGGING
+            console.log("Supabase Response:", data, error);
+
             if (error) {
-                errorMsg.innerText = error.message;
+                // If Supabase throws an error (e.g., password too short, user exists)
+                errorMsg.innerText = "Error: " + error.message;
                 errorMsg.classList.remove('hidden');
                 btn.innerText = "Create Account";
+                
+            } else if (data.user && data.session === null) {
+                // The Invisible Bounce Trap Catch!
+                errorMsg.innerText = "Account created, but you need to verify your email. (Or turn off 'Confirm Email' in Supabase settings!)";
+                errorMsg.classList.remove('hidden');
+                btn.innerText = "Create Account";
+                
             } else {
+                // Complete Success!
                 btn.innerText = "Success! Redirecting...";
                 btn.style.backgroundColor = "green";
-                // Send them to the dashboard!
                 setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
             }
         });
