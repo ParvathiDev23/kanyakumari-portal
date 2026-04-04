@@ -1,53 +1,278 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Attractions | Kanyakumari</title>
+    <title>Attractions | Kanyakumari Tourism</title>
+    <meta name="description" content="Explore the iconic landmarks of Kanyakumari, from the Vivekananda Rock Memorial to the historic Padmanabhapuram Palace.">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
-      tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "on-primary": "#ffffff", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+              "surface-container-lowest": "#ffffff", "on-primary": "#ffffff", "primary": "#003974",
+              "on-surface": "#191c1d", "surface-container": "#edeeef", "inverse-surface": "#2e3132",
+              "surface-dim": "#d9dadb", "tertiary-fixed": "#79f7e3", "on-tertiary-fixed-variant": "#005047",
+              "on-secondary-fixed": "#2f1500", "secondary": "#904d00", "on-tertiary-fixed": "#00201c",
+              "background": "#f8f9fa", "on-error": "#ffffff", "on-surface-variant": "#424751",
+              "on-error-container": "#93000a", "tertiary-fixed-dim": "#59dbc7", "secondary-fixed-dim": "#ffb77d",
+              "inverse-on-surface": "#f0f1f2", "outline": "#727782", "secondary-container": "#fd8b00",
+              "on-secondary": "#ffffff", "error": "#ba1a1a", "on-secondary-fixed-variant": "#6e3900",
+              "inverse-primary": "#a9c7ff", "tertiary-container": "#005c51", "on-tertiary-container": "#57d8c5",
+              "on-secondary-container": "#603100", "on-primary-fixed": "#001b3d", "on-primary-container": "#a4c5ff",
+              "tertiary": "#00423a", "surface-tint": "#1f5eac", "surface-container-highest": "#e1e3e4",
+              "surface-bright": "#f8f9fa", "on-primary-fixed-variant": "#00468b", "surface": "#f8f9fa",
+              "primary-fixed": "#d6e3ff", "primary-container": "#00509d", "primary-fixed-dim": "#a9c7ff",
+              "outline-variant": "#c2c6d3", "surface-container-low": "#f3f4f5", "surface-variant": "#e1e3e4",
+              "surface-container-high": "#e7e8e9", "secondary-fixed": "#ffdcc3", "error-container": "#ffdad6"
+            },
+            "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.5rem", "xl": "1rem", "full": "9999px" },
+            "fontFamily": { "headline": ["Noto Serif"], "body": ["Manrope"], "label": ["Manrope"] }
+          },
+        },
+      }
     </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
 </head>
-<body class="bg-surface font-body">
+<body class="bg-background text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
 
-<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md shadow-sm">
+<nav class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-md shadow-[0_20px_40px_rgba(0,27,61,0.06)]">
     <div class="flex justify-between items-center px-12 py-6 max-w-screen-2xl mx-auto">
-        <a href="index.html" class="font-headline text-2xl font-bold text-[#00509d]">Kanyakumari</a>
-        <div class="hidden md:flex gap-8 font-headline text-lg">
-            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="index.html">Home</a>
-            <a class="text-[#00509d] font-bold border-b-2 border-[#00509d] pb-1" href="attractions.html">Attractions</a>
-            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="history.html">History</a>
-            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="markets.html">Markets</a>
+        <a href="index.html" class="font-headline text-2xl font-bold tracking-tighter text-[#00509d]">Kanyakumari</a>
+        <div class="hidden md:flex items-center gap-8 font-headline text-lg tracking-tight">
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all duration-300 hover:opacity-80" href="index.html">Home</a>
+            <a class="text-[#00509d] font-bold border-b-2 border-[#00509d] pb-1 transition-all duration-300 hover:opacity-80" href="attractions.html">Attractions</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all duration-300 hover:opacity-80" href="history.html">History</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all duration-300 hover:opacity-80" href="markets.html">Markets</a>
         </div>
-        <a href="booking.html" class="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:opacity-90">Book Now</a>
+        <a href="booking.html" class="bg-primary-container text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 hover:opacity-80 scale-95 active:duration-150">
+            Book Now
+        </a>
     </div>
 </nav>
 
-<main class="pt-32 pb-24 px-12 max-w-screen-2xl mx-auto">
-    <h2 class="font-headline text-5xl text-primary font-bold mb-12">Iconic Landmarks</h2>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-        <div class="group flex flex-col bg-white p-4 rounded-xl shadow-lg">
-            <div class="relative aspect-[4/5] overflow-hidden rounded-xl mb-6">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVt22dJ2c1k9PTn3btI_v8eM_loseZSJlG-3rCsCGBSgGK1u-0CUSvQ1Ue9LwgDgg3egVz8pLcxSET4OVAFT0r4f1Mc0wx5KKt3h_zvP4-UaXn_Fja4Qf7Cs0cr25jP7mTJSqVFdo-aU5qquLLqpqJZScF-TkTTN7cyZhLupey6yD8npFhJUhCxC1AjUjOzfMANeuLXwIZNc03KyPum8cMQoH_Y9_YhfYhh_CHS56FkQkvHvlrwmtRpTKdqeiZi1qFliM-hpzaZ4M"/>
+<main class="pt-24">
+    <section class="relative h-[870px] w-full overflow-hidden flex items-end px-12 pb-24">
+        <img alt="Cinematic sunrise over Vivekananda Rock Memorial" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUmoNzMFg2dvo8gg6VDRcy1-4ShvVWa3Tv6ST6dP1uz__K99Evbas-P89hkRSsuFERUiwhq3ZQiKiF2hDIivz-ufMMxALRU3vrGZmKrhmJofL_-LpM6ZH0a1sObqNV_iAAIdwWJsBSzOeF1_mFFaYj3ccvfQLpk8MoLSDBV7EnUQsudrr3MdLM3WOt2GQcoi_vPB_IHo8cCa_TxIOmFSFHelhNjZfKlPnLlifXDSYJieMng02WP_vqzq7-3fqxd4S20-m70ok5hBA"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
+        <div class="relative z-10 max-w-4xl">
+            <span class="font-label text-white/80 uppercase tracking-[0.2em] text-sm mb-4 block">Land of Three Seas</span>
+            <h1 class="font-headline text-6xl md:text-8xl text-white font-bold leading-[1.1] tracking-tight mb-8">Where Horizons Meet.</h1>
+            <p class="text-xl text-white/90 max-w-2xl font-light leading-relaxed">Discover the sacred confluence and architectural marvels at India's southernmost tip, where the sunrise and sunset bless the same horizon.</p>
+        </div>
+    </section>
+
+    <section class="py-32 px-12 max-w-screen-2xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-baseline mb-20 gap-8">
+            <div class="max-w-2xl">
+                <h2 class="font-headline text-4xl text-primary font-bold mb-6">Iconic Landmarks</h2>
+                <p class="text-on-surface-variant text-lg leading-relaxed">From island memorials to majestic palaces, Kanyakumari's heritage is a tapestry of spiritual depth and regal history.</p>
             </div>
-            <h3 class="font-headline text-2xl font-bold text-primary mb-3">Vivekananda Rock Memorial</h3>
-            <p class="text-on-surface-variant mb-6 flex-grow">A sacred island monument where Swami Vivekananda attained enlightenment.</p>
-            <a href="booking.html" class="w-full text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90">Book Tour</a>
+            <div class="flex gap-4">
+                <button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">west</span>
+                </button>
+                <button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">east</span>
+                </button>
+            </div>
         </div>
 
-        <div class="group flex flex-col bg-white p-4 rounded-xl shadow-lg">
-            <div class="relative aspect-[4/5] overflow-hidden rounded-xl mb-6">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWsaCUgf1zU6PnJT3OrhqXebEUKcBT0MK6wXahknOzbovN-0BIW0e69tzoeKAPhiLzmF3NNk0-VQnZPqRQPfoVCHEv7uC6kfwZHAAadQxTJwZ32a_7-JIriQsTenbrPQALs_BxG9umYuv3RTIsjpah2sVDFLFU4Gx8SSJgqydGgsxTTY_WHDWfPZlKJ0gp6RYvOJV_9Y9ygU_brE-R405DtXkoJIlVQeL36v8EfCJ6xku3I7e8k5GXZxdT_zxMiF90LqLjNlP0ilQ"/>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            
+            <div class="group flex flex-col">
+                <div class="relative aspect-[4/5] overflow-hidden rounded-xl mb-6 shadow-[0_20px_40px_rgba(0,27,61,0.06)]">
+                    <img alt="Vivekananda Rock Memorial" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVt22dJ2c1k9PTn3btI_v8eM_loseZSJlG-3rCsCGBSgGK1u-0CUSvQ1Ue9LwgDgg3egVz8pLcxSET4OVAFT0r4f1Mc0wx5KKt3h_zvP4-UaXn_Fja4Qf7Cs0cr25jP7mTJSqVFdo-aU5qquLLqpqJZScF-TkTTN7cyZhLupey6yD8npFhJUhCxC1AjUjOzfMANeuLXwIZNc03KyPum8cMQoH_Y9_YhfYhh_CHS56FkQkvHvlrwmtRpTKdqeiZi1qFliM-hpzaZ4M"/>
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1">
+                        <span class="material-symbols-outlined text-xs text-secondary" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="text-xs font-bold text-on-surface">4.9</span>
+                    </div>
+                </div>
+                <h3 class="font-headline text-2xl font-bold text-primary mb-3">Vivekananda Rock Memorial</h3>
+                <p class="text-on-surface-variant mb-6 leading-relaxed">A sacred island monument where Swami Vivekananda attained enlightenment. Accessible only by a scenic ferry ride.</p>
+                <div class="flex items-center gap-2 mb-8 text-sm text-on-surface-variant">
+                    <span class="material-symbols-outlined text-sm">schedule</span>
+                    <span>08:00 AM - 04:00 PM</span>
+                </div>
+                <div class="mt-auto flex items-center gap-4">
+                    <a href="booking.html" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
+                    <button class="w-12 h-12 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined">map</span>
+                    </button>
+                </div>
             </div>
-            <h3 class="font-headline text-2xl font-bold text-primary mb-3">Thiruvalluvar Statue</h3>
-            <p class="text-on-surface-variant mb-6 flex-grow">A 133-foot stone sculpture dedicated to the legendary Tamil poet.</p>
-            <a href="booking.html" class="w-full text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90">Book Tour</a>
+
+            <div class="group flex flex-col">
+                <div class="relative aspect-[4/5] overflow-hidden rounded-xl mb-6 shadow-[0_20px_40px_rgba(0,27,61,0.06)]">
+                    <img alt="Thiruvalluvar Statue" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWsaCUgf1zU6PnJT3OrhqXebEUKcBT0MK6wXahknOzbovN-0BIW0e69tzoeKAPhiLzmF3NNk0-VQnZPqRQPfoVCHEv7uC6kfwZHAAadQxTJwZ32a_7-JIriQsTenbrPQALs_BxG9umYuv3RTIsjpah2sVDFLFU4Gx8SSJgqydGgsxTTY_WHDWfPZlKJ0gp6RYvOJV_9Y9ygU_brE-R405DtXkoJIlVQeL36v8EfCJ6xku3I7e8k5GXZxdT_zxMiF90LqLjNlP0ilQ"/>
+                </div>
+                <h3 class="font-headline text-2xl font-bold text-primary mb-3">Thiruvalluvar Statue</h3>
+                <p class="text-on-surface-variant mb-6 leading-relaxed">A 133-foot stone sculpture dedicated to the legendary Tamil poet and philosopher, standing proudly in the Laccadive Sea.</p>
+                <div class="flex items-center gap-2 mb-8 text-sm text-on-surface-variant">
+                    <span class="material-symbols-outlined text-sm">schedule</span>
+                    <span>08:00 AM - 04:00 PM</span>
+                </div>
+                <div class="mt-auto flex items-center gap-4">
+                    <a href="booking.html" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
+                    <button class="w-12 h-12 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined">map</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="group flex flex-col">
+                <div class="relative aspect-[4/5] overflow-hidden rounded-xl mb-6 shadow-[0_20px_40px_rgba(0,27,61,0.06)]">
+                    <img alt="Our Lady of Ransom Church" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFU7wbXihhi8BOqNGsrFZ5AHa4zUHlLVs3aINIPDhRyonourKYqcGIHMNpQ2WKu9Hud27beXLCoO0rTQb9d-5v__oef-qkRBIkRT_xCfTSE8GetXtnfov1VEfL47A78Zwgi8jOVGsOZacWOc2813k6ptAya4bzTBnyM2DDE6zEbUBMJW_mtKrITVZ2qLGCCgicpRF7TFjxFI5whB-UOJ1TBikiS6KSLdyMUHmmPy-2Lx2oLDq6yBsb9J5GDYE3V3JWMK7Aw1KyhYk"/>
+                </div>
+                <h3 class="font-headline text-2xl font-bold text-primary mb-3">Our Lady of Ransom Church</h3>
+                <p class="text-on-surface-variant mb-6 leading-relaxed">A breathtaking Gothic-style cathedral. Its pristine white structure glows against the backdrop of the deep blue ocean.</p>
+                <div class="flex items-center gap-2 mb-8 text-sm text-on-surface-variant">
+                    <span class="material-symbols-outlined text-sm">schedule</span>
+                    <span>05:00 AM - 08:30 PM</span>
+                </div>
+                <div class="mt-auto flex items-center gap-4">
+                    <a href="booking.html" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
+                    <button class="w-12 h-12 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined">map</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="group flex flex-col lg:col-span-2">
+                <div class="relative aspect-[16/9] overflow-hidden rounded-xl mb-6 shadow-[0_20px_40px_rgba(0,27,61,0.06)]">
+                    <img alt="Padmanabhapuram Palace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqEOfNTEGjHvo2t9b3U5vleDXEtVw6tW__xPJDwIrVxfm9QpNfgjJKTgRN9grU_Jl4LYdzUsNktYid0q4_YNG4T42M86XtgV-fGAAxisT01iox-bZ11gTEfaXT9gIIHpJa4vFB3UPrOsBoojkfdnsfF9FWm_AmM3x91J7NjuBjNO1KdiDD02Ot49RmXC58l4_DRqsZ0ZCFo1M3R7IQCMVHLYG5LC2jilQhguw32ykoVpszWU-1376XaMGwbftmggaA1cylml9MwC4"/>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="font-headline text-3xl font-bold text-primary mb-3">Padmanabhapuram Palace</h3>
+                        <p class="text-on-surface-variant leading-relaxed">The largest wooden palace in Asia, a masterpiece of indigenous Kerala architecture featuring granite and intricate teakwood carvings.</p>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-sm">schedule</span>
+                            <span>09:00 AM - 04:30 PM (Closed Monday)</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <a href="booking.html" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Explore Heritage</a>
+                            <button class="w-12 h-12 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+                                <span class="material-symbols-outlined">map</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group flex flex-col">
+                <div class="relative aspect-[4/5] overflow-hidden rounded-xl mb-6 shadow-[0_20px_40px_rgba(0,27,61,0.06)]">
+                    <img alt="Gandhi Mandapam" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL7IorfaAX5pUEHej_5-RMYyE7hUMuRnqOSyq9PQkP8NpNFjDTi9RMPZPjYOdZtSAesFj1nGJhHuqvgwAs2W4zaSDtOSSkoKEHN2Pd6F6YJgdW1ZbQ6BKrI9-kn3dEnGmvHPmPcyZYDxthoBuJbsxgfh5KmAMxaaHmm41CpJK9ySNMMSiQBmW0mNCDypsiG8ye7wyOfMRqXo9gQRap0_e-JHLHYvvuHbVSmFULSwDlH22Ifdcr-6Y-13crGoJRnMRbMd3rPAVDbvs"/>
+                </div>
+                <h3 class="font-headline text-2xl font-bold text-primary mb-3">Gandhi Mandapam</h3>
+                <p class="text-on-surface-variant mb-6 leading-relaxed">A memorial built where Mahatma Gandhi's ashes were kept. Its design allows sun rays to fall on the exact spot on his birthday.</p>
+                <div class="flex items-center gap-2 mb-8 text-sm text-on-surface-variant">
+                    <span class="material-symbols-outlined text-sm">schedule</span>
+                    <span>07:00 AM - 07:00 PM</span>
+                </div>
+                <div class="mt-auto flex items-center gap-4">
+                    <a href="booking.html" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
+                    <button class="w-12 h-12 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined">map</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="bg-surface-container-low py-32 px-12">
+        <div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row items-center gap-16">
+            <div class="w-full md:w-1/2">
+                <h2 class="font-headline text-4xl text-primary font-bold mb-8">Plan Your Journey</h2>
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+                            <span class="material-symbols-outlined">directions_boat</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-primary mb-1">Ferry Service</h4>
+                            <p class="text-on-surface-variant">Regular ferries operate to the Rock Memorial from 8 AM. Expect queues during peak season.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+                            <span class="material-symbols-outlined">wb_sunny</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-primary mb-1">Best Time to Visit</h4>
+                            <p class="text-on-surface-variant">October to March offers pleasant weather. Sunrise viewing is best at 6 AM.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 rounded-2xl overflow-hidden shadow-xl aspect-video relative">
+                <img alt="Map of Kanyakumari" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXGP3nelWksRK9-c7B5SSVy6w8-c3-9vBHnyQ1qn5HAl6IfejhD_m0UdVaq1Ek4DGH6z7WioXgc30tX-7T0esm71G5s9Smo02iDmNXd5v3qAC5AXQtehYmaJCQTvQ05N1dyuCQ2cvNVzLK2TmJeZ9wunoaOvha2RoF2ohwKfQ-P8Xg8dab7DEgNUh3fHDc8g6IejeyHjfvpRsQhfq4HA4myjTZ7gwUYQf2NuJeih2gvyaTQxRDx1FdIs0y-e-L_YaqHoXW1SG9xQs"/>
+                <div class="absolute inset-0 bg-primary/10"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-surface-container-low w-full py-16 px-12">
+    <div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
+        <div>
+            <h2 class="font-headline text-2xl text-[#00509d] font-bold mb-6">Kanyakumari</h2>
+            <p class="text-on-surface-variant/70 text-sm leading-loose max-w-xs">
+                Curating the finest coastal experiences where the three seas meet. An editorial journey into the soul of the south.
+            </p>
+        </div>
+        <div class="flex flex-col gap-4">
+            <span class="font-label text-sm tracking-wide uppercase font-bold text-[#00509d]">Explore</span>
+            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4 transition-colors" href="attractions.html">Attractions</a>
+            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4 transition-colors" href="history.html">History</a>
+            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4 transition-colors" href="markets.html">Markets</a>
+        </div>
+        <div class="flex flex-col gap-4">
+            <span class="font-label text-sm tracking-wide uppercase font-bold text-[#00509d]">Newsletter</span>
+            <div class="flex gap-2">
+                <input id="emailInput" class="bg-surface border-none rounded-lg px-4 py-3 text-sm flex-grow focus:ring-1 focus:ring-primary" placeholder="Email address" type="email"/>
+                <button id="subscribeBtn" class="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm">Join</button>
+            </div>
+            <p class="text-[10px] text-on-surface-variant/50 mt-8">© 2024 The Horizon Observer. Inspired by the Laccadive Sea.</p>
         </div>
     </div>
-</main>
+</footer>
+
+<script>
+    document.getElementById('subscribeBtn').addEventListener('click', async () => {
+        const email = document.getElementById('emailInput').value;
+        const btn = document.getElementById('subscribeBtn');
+        if(!email) return alert("Please enter an email");
+        btn.innerText = "Sending...";
+        try {
+            const response = await fetch('https://YOUR-RENDER-URL.onrender.com/api/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            });
+            if(response.ok) {
+                btn.innerText = "Subscribed!";
+                btn.style.backgroundColor = "green";
+                document.getElementById('emailInput').value = ''; 
+            } else {
+                btn.innerText = "Error"; btn.style.backgroundColor = "red";
+            }
+        } catch (error) {
+            console.error(error); btn.innerText = "Failed"; btn.style.backgroundColor = "red";
+        }
+    });
+</script>
 </body>
 </html>

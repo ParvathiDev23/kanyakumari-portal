@@ -1,40 +1,232 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Checkout | Kanyakumari</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;700&display=swap" rel="stylesheet"/>
+    <title>Secure Checkout | Kanyakumari Tourism</title>
+    <meta name="description" content="Secure checkout for your Kanyakumari Sunrise Serenity Tour.">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
-      tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "secondary-container": "#fd8b00", "on-secondary-container": "#603100" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+              "on-tertiary-fixed": "#00201c", "background": "#f8f9fa", "surface-container-high": "#e7e8e9",
+              "on-secondary-fixed-variant": "#6e3900", "secondary-fixed": "#ffdcc3", "surface-dim": "#d9dadb",
+              "on-surface-variant": "#424751", "on-error": "#ffffff", "on-primary-fixed": "#001b3d",
+              "on-background": "#191c1d", "on-secondary-fixed": "#2f1500", "primary-container": "#00509d",
+              "on-tertiary": "#ffffff", "on-primary-container": "#a4c5ff", "on-tertiary-fixed-variant": "#005047",
+              "secondary": "#904d00", "error-container": "#ffdad6", "tertiary": "#00423a",
+              "error": "#ba1a1a", "on-error-container": "#93000a", "surface-container-lowest": "#ffffff",
+              "secondary-fixed-dim": "#ffb77d", "primary-fixed-dim": "#a9c7ff", "inverse-surface": "#2e3132",
+              "surface-bright": "#f8f9fa", "primary": "#003974", "inverse-on-surface": "#f0f1f2",
+              "secondary-container": "#fd8b00", "outline": "#727782", "tertiary-container": "#005c51",
+              "surface-container": "#edeeef", "tertiary-fixed": "#79f7e3", "on-tertiary-container": "#57d8c5",
+              "surface": "#f8f9fa", "on-primary-fixed-variant": "#00468b", "inverse-primary": "#a9c7ff",
+              "tertiary-fixed-dim": "#59dbc7", "surface-container-low": "#f3f4f5", "primary-fixed": "#d6e3ff",
+              "on-primary": "#ffffff", "on-secondary": "#ffffff", "on-secondary-container": "#603100",
+              "surface-container-highest": "#e1e3e4", "surface-tint": "#1f5eac", "outline-variant": "#c2c6d3",
+              "surface-variant": "#e1e3e4", "on-surface": "#191c1d"
+            },
+            "fontFamily": {
+              "headline": ["Noto Serif", "serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            }
+          },
+        },
+      }
     </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-shift-bg { background-color: #f3f4f5; }
+    </style>
 </head>
-<body class="bg-[#f8f9fa] font-body">
+<body class="bg-surface font-body text-on-surface">
 
-<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md shadow-sm">
-    <div class="flex justify-between items-center px-12 py-6 max-w-screen-2xl mx-auto">
-        <a href="index.html" class="font-headline text-2xl font-bold text-[#00509d]">Kanyakumari Secure Checkout</a>
-        <a href="booking.html" class="text-sm font-bold text-gray-500 hover:text-primary">Cancel & Return</a>
+<header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl shadow-sm h-20 flex justify-between items-center px-6 md:px-12 w-full">
+    <a href="index.html" class="text-2xl font-bold text-primary font-headline tracking-tight hover:opacity-80 transition-opacity">Kanyakumari Tourism</a>
+    <a href="booking.html" class="flex items-center gap-2 text-sm font-bold text-on-surface-variant hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-lg">arrow_back</span>
+        <span class="hidden md:inline">Cancel & Return</span>
+    </a>
+</header>
+
+<main class="pt-32 pb-20 px-4 md:px-8 max-w-7xl mx-auto min-h-screen">
+    <div class="mb-12">
+        <p class="font-label text-xs tracking-widest uppercase text-secondary mb-2">Checkout Process</p>
+        <h1 class="font-headline text-4xl md:text-5xl font-bold text-primary tracking-tight">Secure Payment</h1>
     </div>
-</nav>
 
-<main class="pt-32 pb-24 px-12 max-w-screen-2xl mx-auto flex flex-col items-center">
-    <h1 class="font-headline text-4xl text-primary font-bold mb-8">Select Payment Method</h1>
-    
-    <div class="bg-white p-10 rounded-xl shadow-lg w-full max-w-2xl">
-        <div class="space-y-4">
-            <input class="w-full p-4 bg-gray-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary" placeholder="Card Number" type="text"/>
-            <div class="grid grid-cols-2 gap-4">
-                <input class="w-full p-4 bg-gray-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary" placeholder="MM / YY" type="text"/>
-                <input class="w-full p-4 bg-gray-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary" placeholder="CVV" type="password"/>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <aside class="hidden lg:flex lg:col-span-3 flex-col p-4 space-y-2 bg-white shadow-sm border border-outline-variant/15 h-fit rounded-xl">
+            <div class="mb-6 px-2 pt-2">
+                <h2 class="text-xl font-bold text-primary font-headline">Checkout</h2>
+                <p class="text-xs text-on-surface-variant font-body">Secure Gateway</p>
+            </div>
+            <div class="flex items-center p-3 bg-primary/5 text-primary rounded-lg font-bold shadow-sm border border-primary/10">
+                <span class="material-symbols-outlined mr-3 text-primary">payments</span>
+                <span class="font-medium font-body">Payment</span>
+            </div>
+            <div class="flex items-center p-3 text-on-surface-variant/50 rounded-lg transition-all">
+                <span class="material-symbols-outlined mr-3">verified</span>
+                <span class="font-medium font-body">Confirmation</span>
+            </div>
+            <div class="flex items-center p-3 text-on-surface-variant hover:bg-surface-container rounded-lg transition-all cursor-pointer">
+                <span class="material-symbols-outlined mr-3">history</span>
+                <span class="font-medium font-body">History</span>
+            </div>
+            <div class="flex items-center p-3 text-on-surface-variant hover:bg-surface-container rounded-lg transition-all cursor-pointer">
+                <span class="material-symbols-outlined mr-3">support_agent</span>
+                <span class="font-medium font-body">Help</span>
+            </div>
+        </aside>
+
+        <div class="lg:col-span-5 space-y-6">
+            <section class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_20px_40px_rgba(0,27,61,0.04)] border border-outline-variant/15">
+                <div class="p-6 border-b border-outline-variant/15 bg-surface-container-low">
+                    <h3 class="font-bold text-lg text-primary font-headline">Select Payment Method</h3>
+                </div>
+                <div class="p-6 space-y-8">
+                    
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-label text-xs font-bold uppercase tracking-wider text-on-surface-variant">UPI / QR</span>
+                            <span class="text-[10px] text-green-600 font-bold tracking-widest flex items-center bg-green-50 px-2 py-1 rounded-full">
+                                <span class="material-symbols-outlined text-sm mr-1">bolt</span>Fastest
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button class="flex flex-col items-center justify-center p-4 border border-outline-variant/30 rounded-lg hover:border-primary hover:bg-primary/5 transition-all">
+                                <span class="material-symbols-outlined text-3xl mb-1 text-primary">phone_iphone</span>
+                                <span class="text-xs font-semibold font-body text-on-surface-variant">GPay</span>
+                            </button>
+                            <button class="flex flex-col items-center justify-center p-4 border border-outline-variant/30 rounded-lg hover:border-primary hover:bg-primary/5 transition-all">
+                                <span class="material-symbols-outlined text-3xl mb-1 text-primary">account_balance_wallet</span>
+                                <span class="text-xs font-semibold font-body text-on-surface-variant">PhonePe</span>
+                            </button>
+                            <button class="flex flex-col items-center justify-center p-4 border border-outline-variant/30 rounded-lg hover:border-primary hover:bg-primary/5 transition-all">
+                                <span class="material-symbols-outlined text-3xl mb-1 text-primary">qr_code_scanner</span>
+                                <span class="text-xs font-semibold font-body text-on-surface-variant">Paytm</span>
+                            </button>
+                            <button class="flex flex-col items-center justify-center p-4 border border-outline-variant/30 rounded-lg hover:border-primary hover:bg-primary/5 transition-all">
+                                <span class="material-symbols-outlined text-3xl mb-1 text-primary">qr_code_2</span>
+                                <span class="text-xs font-semibold font-body text-on-surface-variant">Scan QR</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="font-label text-xs font-bold uppercase tracking-wider text-on-surface-variant block mb-4">Credit / Debit Card</span>
+                        <div class="space-y-4 font-body">
+                            <div class="relative">
+                                <input class="w-full p-4 bg-surface border border-outline-variant/30 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="Card Number" type="text"/>
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/50">credit_card</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input class="w-full p-4 bg-surface border border-outline-variant/30 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="MM / YY" type="text"/>
+                                <input class="w-full p-4 bg-surface border border-outline-variant/30 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="CVV" type="password"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="font-label text-xs font-bold uppercase tracking-wider text-on-surface-variant block mb-4">Netbanking & Wallets</span>
+                        <div class="space-y-3 font-body">
+                            <button class="w-full flex items-center justify-between p-4 border border-outline-variant/30 bg-surface rounded-lg hover:border-primary hover:bg-primary/5 transition-colors">
+                                <div class="flex items-center">
+                                    <span class="material-symbols-outlined mr-3 text-primary">account_balance</span>
+                                    <span class="text-sm font-medium text-on-surface-variant">Select Netbanking</span>
+                                </div>
+                                <span class="material-symbols-outlined text-on-surface-variant/50">chevron_right</span>
+                            </button>
+                            <button class="w-full flex items-center justify-between p-4 border border-outline-variant/30 bg-surface rounded-lg hover:border-primary hover:bg-primary/5 transition-colors">
+                                <div class="flex items-center">
+                                    <span class="material-symbols-outlined mr-3 text-primary">wallet</span>
+                                    <span class="text-sm font-medium text-on-surface-variant">Digital Wallets</span>
+                                </div>
+                                <span class="material-symbols-outlined text-on-surface-variant/50">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <div class="flex flex-wrap items-center justify-center gap-6 py-4 opacity-70">
+                <div class="flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">lock</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest font-label text-on-surface-variant">256-bit SSL Encrypted</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest font-label text-on-surface-variant">Secure Gateway</span>
+                </div>
             </div>
         </div>
-        
-        <a href="index.html" class="block mt-8 w-full text-center bg-secondary-container text-on-secondary-container py-5 rounded-lg font-bold text-xl hover:scale-[1.02] transition-all">
-            Pay ₹5,048 Securely
-        </a>
+
+        <aside class="lg:col-span-4 space-y-6">
+            <div class="bg-white rounded-xl p-6 shadow-[0_30px_60px_rgba(0,27,61,0.08)] border border-outline-variant/20 overflow-hidden relative">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-secondary-container/10 rounded-full -mr-16 -mt-16"></div>
+                
+                <h3 class="font-headline font-bold text-xl text-primary mb-6">Order Summary</h3>
+                
+                <div class="space-y-4 mb-8 font-body">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-bold text-on-surface">Sunrise Serenity Tour</p>
+                            <p class="text-xs text-on-surface-variant">2 Adults • Early Morning</p>
+                        </div>
+                        <span class="text-sm font-bold text-on-surface">₹4,998</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-4 border-b border-outline-variant/30">
+                        <p class="text-sm text-on-surface-variant">Convenience Fee</p>
+                        <span class="text-sm text-on-surface">₹50</span>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mb-8 font-body">
+                    <p class="text-lg font-bold text-primary">Total Amount</p>
+                    <p class="text-3xl font-black font-headline text-primary">₹5,048</p>
+                </div>
+                
+                <a href="index.html" class="w-full bg-secondary-container text-on-secondary-container font-bold py-4 rounded-lg shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all flex items-center justify-center group font-body">
+                    <span class="mr-2 text-lg">Pay ₹5,048</span>
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </a>
+            </div>
+
+            <div class="rounded-xl overflow-hidden aspect-[4/3] md:aspect-[3/4] relative group shadow-lg">
+                <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcELPFMMh-YOX9gc9foCwBqclbzBrv8sK0MEuGZ2ftRrzXjZwBY5vTY4IAcSkIyZ-EnNLAm5w8I65dZqUyeggvIWhHPi-SgXeMEORlKc0AcvUITznL7TwHiE3xE7X02t2wGaU-ikDzmEITSjWdJ2AsO5Aw_Z0KeGP6VrreNkoKPyuqpAZwSfx0fQyg7lkCeAoSLZAThVmjon7fFsCkx83iK5KqWhbtylbxSOumYQskSYrbQeqKkcKBKf-IYyR88mJRtP6IF3MjnO0" alt="Sunrise over the horizon"/>
+                <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent flex items-end p-6">
+                    <div class="text-white">
+                        <p class="font-headline italic text-lg leading-tight mb-2">"Where three oceans meet in gold."</p>
+                        <p class="font-label text-[10px] tracking-[0.2em] uppercase opacity-70 font-bold">The Southern Horizon</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
     </div>
 </main>
+
+<footer class="w-full py-12 bg-surface-container-low border-t border-outline-variant/20 flex flex-col items-center justify-center space-y-6 px-4 mt-12">
+    <div class="font-headline italic text-primary text-xl font-bold">Kanyakumari Tourism</div>
+    <div class="flex flex-wrap justify-center gap-6">
+        <a class="font-label text-xs tracking-wider uppercase text-on-surface-variant hover:text-secondary-container transition-colors" href="#">Privacy Policy</a>
+        <a class="font-label text-xs tracking-wider uppercase text-primary font-bold hover:opacity-80 transition-opacity" href="#">Secure Checkout Guarantee</a>
+        <a class="font-label text-xs tracking-wider uppercase text-on-surface-variant hover:text-secondary-container transition-colors" href="#">Terms of Service</a>
+    </div>
+    <p class="text-on-surface-variant/50 text-[10px] uppercase tracking-widest text-center mt-4 font-label">
+        © 2024 The Horizon Observer.
+    </p>
+</footer>
+
 </body>
 </html>
