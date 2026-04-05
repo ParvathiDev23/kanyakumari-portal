@@ -43,14 +43,14 @@
     </div>
 
     <script>
-        
         const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
         
+        // We only declare this ONCE!
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent page reload
+            e.preventDefault(); 
             
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -66,9 +66,6 @@
                 password: password,
             });
 
-            // LOG THE RESULTS FOR DEBUGGING
-            console.log("Supabase Response:", data, error);
-
             if (error) {
                 // If Supabase throws an error (e.g., password too short, user exists)
                 errorMsg.innerText = "Error: " + error.message;
@@ -76,8 +73,8 @@
                 btn.innerText = "Create Account";
                 
             } else if (data.user && data.session === null) {
-                // The Invisible Bounce Trap Catch!
-                errorMsg.innerText = "Account created, but you need to verify your email. (Or turn off 'Confirm Email' in Supabase settings!)";
+                // Catch the email confirmation requirement
+                errorMsg.innerText = "Account created! Please check your email to verify your account.";
                 errorMsg.classList.remove('hidden');
                 btn.innerText = "Create Account";
                 
