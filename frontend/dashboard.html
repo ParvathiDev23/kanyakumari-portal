@@ -15,7 +15,7 @@
     </script>
     <style>
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        /* A simple loader class to hide content until we verify the user */
+        /* Hide dashboard content initially */
         #dashboardContent { display: none; } 
     </style>
 </head>
@@ -88,37 +88,42 @@
     </div>
 
     <script>
-        // --- PASTE YOUR SUPABASE KEYS HERE ---
-        const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+        const MY_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+        const MY_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Use 'db' to bypass ghost cache errors
+        const db = window.supabase.createClient(MY_URL, MY_KEY);
 
         // Function to check if the user is allowed here
         async function checkUser() {
-            // Get the current session from Supabase
-            const { data: { user }, error } = await supabase.auth.getUser();
+            try {
+                // Get the current session from Supabase
+                const { data: { user }, error } = await db.auth.getUser();
 
-            if (!user) {
-                // If there is no user, they are not logged in! Kick them to login page.
+                if (!user || error) {
+                    // Kick them to login page if not logged in
+                    window.location.href = 'login.html';
+                } else {
+                    // SUCCESS! Hide loading screen, show dashboard
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    document.getElementById('dashboardContent').style.display = 'flex';
+                    
+                    // Display their email
+                    document.getElementById('userEmailDisplay').innerText = user.email;
+                }
+            } catch (err) {
+                console.error("Auth check failed:", err);
                 window.location.href = 'login.html';
-            } else {
-                // If they are logged in, hide the loading screen and show the dashboard
-                document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('dashboardContent').style.display = 'flex';
-                
-                // Display their email in the UI
-                document.getElementById('userEmailDisplay').innerText = user.email;
             }
         }
 
-        // Run the check immediately when the page loads
+        // Run the check immediately
         checkUser();
 
         // Handle Log Out
         document.getElementById('logoutBtn').addEventListener('click', async () => {
-            await supabase.auth.signOut();
-            window.location.href = 'login.html'; // Send back to login after signing out
+            await db.auth.signOut();
+            window.location.href = 'login.html'; 
         });
     </script>
 </body>
