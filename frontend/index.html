@@ -6,7 +6,9 @@
     <title>Kanyakumari | Where Three Seas Meet</title>
     <meta name="description" content="Book exclusive sunrise tours and explore the history, markets, and attractions of Kanyakumari where three seas meet.">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script class="hidden" id="tailwind-config">
@@ -109,7 +111,7 @@
         
         try {
             // NOTE: REPLACE THIS URL with your actual Render API link once you deploy your backend!
-            const response = await fetch('https://kanyakumari-portal.onrender.com', {
+            const response = await fetch('https://YOUR-RENDER-URL.onrender.com/api/subscribe', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email })
@@ -130,6 +132,7 @@
         }
     });
 </script>
+
 <script>
     // --- PASTE YOUR SUPABASE KEYS HERE ---
     const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
@@ -153,7 +156,10 @@
             }
         }
         updateNavbar();
+    } else {
+        console.warn("Supabase library not loaded correctly.");
     }
 </script>
+
 </body>
 </html>
