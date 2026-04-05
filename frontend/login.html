@@ -42,12 +42,12 @@
         </p>
     </div>
 
-   <script>
-        const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+    <script>
+        const MY_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+        const MY_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
         
-        // We only declare this ONCE!
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Renamed from 'supabase' to 'db' to bypass ghost caches!
+        const db = window.supabase.createClient(MY_URL, MY_KEY);
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault(); 
@@ -60,7 +60,7 @@
             btn.innerText = "Authenticating...";
             errorMsg.classList.add('hidden');
 
-            const { data, error } = await supabase.auth.signInWithPassword({
+            const { data, error } = await db.auth.signInWithPassword({
                 email: email,
                 password: password,
             });
