@@ -6,6 +6,7 @@
     <title>Kanyakumari | Where Three Seas Meet</title>
     <meta name="description" content="Book exclusive sunrise tours and explore the history, markets, and attractions of Kanyakumari where three seas meet.">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script class="hidden" id="tailwind-config">
@@ -108,7 +109,7 @@
         
         try {
             // NOTE: REPLACE THIS URL with your actual Render API link once you deploy your backend!
-            const response = await fetch('https://YOUR-RENDER-URL.onrender.com/api/subscribe', {
+            const response = await fetch('https://kanyakumari-portal.onrender.com', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email })
@@ -128,6 +129,31 @@
             btn.style.backgroundColor = "red";
         }
     });
+</script>
+<script>
+    // --- PASTE YOUR SUPABASE KEYS HERE ---
+    const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+    
+    if (window.supabase) {
+        const supabaseAuth = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function updateNavbar() {
+            const { data: { user } } = await supabaseAuth.auth.getUser();
+            
+            if (user) {
+                // Find the Login link and change it to Dashboard
+                const loginLinks = document.querySelectorAll('a[href="login.html"]');
+                loginLinks.forEach(link => {
+                    link.href = "dashboard.html";
+                    link.innerText = "My Dashboard";
+                    link.classList.add("bg-secondary-container", "text-on-secondary-container", "px-4", "py-2", "rounded-lg");
+                    link.classList.remove("text-primary");
+                });
+            }
+        }
+        updateNavbar();
+    }
 </script>
 </body>
 </html>
