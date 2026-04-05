@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script id="tailwind-config">
-      tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "secondary-container": "#fd8b00", "on-secondary-container": "#603100", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
+      tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "secondary-container": "#fd8b00", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
     </script>
 </head>
 <body class="bg-surface font-body h-screen flex items-center justify-center p-4">
@@ -43,12 +43,11 @@
     </div>
 
     <script>
-        // YOUR EXACT KEYS
-        const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+        const MY_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+        const MY_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
         
-        // Declared strictly ONCE to prevent the SyntaxError
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Renamed from 'supabase' to 'db' to bypass the error!
+        const db = window.supabase.createClient(MY_URL, MY_KEY);
 
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault(); 
@@ -61,7 +60,7 @@
             btn.innerText = "Creating account...";
             errorMsg.classList.add('hidden');
 
-            const { data, error } = await supabase.auth.signUp({
+            const { data, error } = await db.auth.signUp({
                 email: email,
                 password: password,
             });
