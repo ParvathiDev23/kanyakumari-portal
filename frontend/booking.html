@@ -5,7 +5,10 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Kanyakumari | Sunrise Serenity Tour Booking</title>
     <meta name="description" content="Book your Sunrise Serenity Tour in Kanyakumari. Customize your visit, select dates, and experience the mystical confluence of three seas.">
+    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
@@ -65,8 +68,13 @@
             <a class="font-headline text-lg tracking-tight text-on-surface-variant hover:text-[#00509d] transition-all duration-300" href="attractions.html">Attractions</a>
             <a class="font-headline text-lg tracking-tight text-on-surface-variant hover:text-[#00509d] transition-all duration-300" href="history.html">History</a>
             <a class="font-headline text-lg tracking-tight text-on-surface-variant hover:text-[#00509d] transition-all duration-300" href="markets.html">Markets</a>
+        </div>
+        
+        <div class="hidden md:flex items-center gap-6">
+            <a href="login.html" class="font-label font-bold text-sm tracking-wide uppercase text-primary hover:opacity-70 transition-opacity">Log In</a>
             <a href="booking.html" class="bg-primary text-on-primary px-6 py-2 rounded-lg font-bold transition-all duration-300 hover:opacity-80 active:scale-95">Book Now</a>
         </div>
+        
         <div class="md:hidden">
             <span class="material-symbols-outlined text-primary text-3xl">menu</span>
         </div>
@@ -308,8 +316,8 @@
         btn.innerText = "Sending...";
         
         try {
-            // NOTE: REPLACE THIS URL with your actual Render API link once deployed
-            const response = await fetch('https://YOUR-RENDER-URL.onrender.com/api/subscribe', {
+            // Updated Render API link
+            const response = await fetch('https://kanyakumari-portal.onrender.com/api/subscribe', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email })
@@ -331,6 +339,31 @@
             setTimeout(() => { btn.innerText = originalText; btn.style.backgroundColor = ""; }, 3000);
         }
     });
+</script>
+
+<script>
+    const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+    
+    if (window.supabase) {
+        const supabaseAuth = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function updateNavbar() {
+            const { data: { user } } = await supabaseAuth.auth.getUser();
+            
+            if (user) {
+                // Find the Login link and change it to Dashboard
+                const loginLinks = document.querySelectorAll('a[href="login.html"]');
+                loginLinks.forEach(link => {
+                    link.href = "dashboard.html";
+                    link.innerText = "My Dashboard";
+                    link.classList.add("bg-secondary-container", "text-on-secondary-container", "px-4", "py-2", "rounded-lg");
+                    link.classList.remove("text-primary");
+                });
+            }
+        }
+        updateNavbar();
+    }
 </script>
 </body>
 </html>
