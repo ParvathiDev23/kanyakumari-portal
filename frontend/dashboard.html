@@ -7,15 +7,12 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script id="tailwind-config">
       tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "secondary-container": "#fd8b00", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
     </script>
     <style>
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        /* Hide dashboard content initially */
         #dashboardContent { display: none; } 
     </style>
 </head>
@@ -36,15 +33,9 @@
                 <a href="#" class="flex items-center gap-3 p-3 bg-primary/5 text-primary rounded-lg font-bold">
                     <span class="material-symbols-outlined">confirmation_number</span> My Tours
                 </a>
-                <a href="#" class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-gray-50 rounded-lg transition-colors">
-                    <span class="material-symbols-outlined">favorite</span> Saved Places
-                </a>
-                <a href="#" class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-gray-50 rounded-lg transition-colors">
-                    <span class="material-symbols-outlined">manage_accounts</span> Settings
-                </a>
             </nav>
             <div class="p-4 border-t border-gray-100">
-                <button id="logoutBtn" class="flex items-center gap-3 p-3 w-full text-red-600 hover:bg-red-50 rounded-lg transition-colors font-bold text-left">
+                <button id="logoutBtn" class="flex items-center gap-3 p-3 w-full text-red-600 hover:bg-red-50 rounded-lg font-bold text-left">
                     <span class="material-symbols-outlined">logout</span> Log Out
                 </button>
             </div>
@@ -56,32 +47,18 @@
                     <h1 class="text-4xl font-headline font-bold text-primary mb-2">Welcome Back.</h1>
                     <p class="text-on-surface-variant">Logged in as: <span id="userEmailDisplay" class="font-bold text-primary"></span></p>
                 </div>
-                <a href="index.html" class="bg-white border border-gray-200 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:shadow-md transition-shadow">
-                    Return to Main Site
+                <a href="booking.html" class="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold shadow-sm hover:opacity-90">
+                    + New Booking
                 </a>
             </header>
 
             <section>
                 <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-secondary-container">local_activity</span> Upcoming Bookings
+                    <span class="material-symbols-outlined text-secondary-container">local_activity</span> Your Bookings
                 </h2>
                 
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div class="flex items-center gap-6">
-                        <div class="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-primary text-3xl">wb_twilight</span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-primary">Sunrise Serenity Tour</h3>
-                            <p class="text-sm text-on-surface-variant">Nov 20, 2024 • 2 Adults • 5:00 AM Slot</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-3 w-full md:w-auto">
-                        <button class="flex-1 md:flex-none px-4 py-2 bg-gray-100 hover:bg-gray-200 text-on-surface-variant rounded-lg font-bold text-sm transition-colors">Modify</button>
-                        <button class="flex-1 md:flex-none px-4 py-2 bg-primary text-white rounded-lg font-bold text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-sm">download</span> Ticket
-                        </button>
-                    </div>
+                <div id="bookingsContainer" class="space-y-4">
+                    <p class="text-gray-500 italic">Fetching your tickets...</p>
                 </div>
             </section>
         </main>
@@ -90,37 +67,76 @@
     <script>
         const MY_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
         const MY_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
-        
-        // Use 'db' to bypass ghost cache errors
         const db = window.supabase.createClient(MY_URL, MY_KEY);
 
-        // Function to check if the user is allowed here
-        async function checkUser() {
-            try {
-                // Get the current session from Supabase
-                const { data: { user }, error } = await db.auth.getUser();
+        async function initDashboard() {
+            // 1. Verify User
+            const { data: { user }, error } = await db.auth.getUser();
 
-                if (!user || error) {
-                    // Kick them to login page if not logged in
-                    window.location.href = 'login.html';
-                } else {
-                    // SUCCESS! Hide loading screen, show dashboard
-                    document.getElementById('loadingScreen').style.display = 'none';
-                    document.getElementById('dashboardContent').style.display = 'flex';
-                    
-                    // Display their email
-                    document.getElementById('userEmailDisplay').innerText = user.email;
-                }
-            } catch (err) {
-                console.error("Auth check failed:", err);
+            if (!user || error) {
                 window.location.href = 'login.html';
+                return;
+            }
+
+            // Show UI
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'flex';
+            document.getElementById('userEmailDisplay').innerText = user.email;
+
+            // 2. Fetch their specific bookings
+            const { data: bookings, error: fetchError } = await db
+                .from('bookings')
+                .select('*')
+                .eq('user_email', user.email) // ONLY get rows matching their email
+                .order('created_at', { ascending: false });
+
+            const container = document.getElementById('bookingsContainer');
+
+            if (fetchError) {
+                container.innerHTML = `<p class="text-red-500">Error loading bookings.</p>`;
+                return;
+            }
+
+            // 3. Render the HTML dynamically
+            if (bookings.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white p-8 rounded-xl border border-dashed border-gray-300 text-center">
+                        <p class="text-gray-500">You don't have any upcoming tours yet.</p>
+                        <a href="booking.html" class="text-primary font-bold hover:underline mt-2 inline-block">Explore Tours</a>
+                    </div>`;
+            } else {
+                container.innerHTML = ''; // Clear the "fetching" text
+                
+                // Loop through every booking and create a ticket card
+                bookings.forEach(booking => {
+                    const ticketHTML = `
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                            <div class="flex items-center gap-6">
+                                <div class="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-primary text-3xl">wb_twilight</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-primary">Sunrise Serenity Tour</h3>
+                                    <p class="text-sm text-on-surface-variant">
+                                        Date: <b>${booking.tour_date}</b> • Slot: <b>${booking.time_slot}</b> • Guests: <b>${booking.guests}</b>
+                                    </p>
+                                    <p class="text-xs text-gray-400 mt-1">Booking ID: ${booking.id}</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3 w-full md:w-auto">
+                                <span class="px-4 py-2 bg-green-100 text-green-800 rounded-lg font-bold text-sm flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">check_circle</span> Confirmed
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += ticketHTML;
+                });
             }
         }
 
-        // Run the check immediately
-        checkUser();
+        initDashboard();
 
-        // Handle Log Out
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await db.auth.signOut();
             window.location.href = 'login.html'; 
