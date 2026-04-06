@@ -1,18 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Kanyakumari Tourism | Home</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <title>Kanyakumari | Where Three Seas Meet</title>
+    <meta name="description" content="Book exclusive sunrise tours and explore the history, markets, and attractions of Kanyakumari where three seas meet.">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script id="tailwind-config">
-      tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "secondary-container": "#fd8b00", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script class="hidden" id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#003974", "on-primary": "#ffffff", "surface": "#f8f9fa",
+              "on-surface": "#191c1d", "secondary-container": "#fd8b00", "on-secondary-container": "#603100",
+              "surface-container-low": "#f3f4f5", "on-surface-variant": "#424751", "secondary": "#904d00"
+            },
+            fontFamily: { "headline": ["Noto Serif", "serif"], "body": ["Manrope", "sans-serif"], "label": ["Manrope", "sans-serif"] }
+          },
+        },
+      }
     </script>
     <style>
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .editorial-shadow { box-shadow: 0 20px 40px rgba(0, 27, 61, 0.06); }
+    </style>
+    <style>
         /* Chatbot Animations */
         .chat-open { transform: scale(1); opacity: 1; pointer-events: auto; }
         .chat-closed { transform: scale(0.95) translateY(20px); opacity: 0; pointer-events: none; }
@@ -22,35 +40,136 @@
         @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
 </head>
-<body class="bg-surface font-body text-[#191c1d] overflow-x-hidden">
+<body class="bg-surface font-body text-on-surface">
 
-    <nav class="fixed top-0 w-full z-40 bg-white/80 backdrop-blur-md shadow-sm">
-        <div class="flex justify-between items-center px-6 md:px-12 py-5 max-w-screen-2xl mx-auto">
-            <a href="index.html" class="font-headline text-2xl font-bold text-primary">Kanyakumari</a>
-            <div class="hidden md:flex gap-8 items-center">
-                <a class="font-bold text-sm tracking-wide text-primary" href="index.html">Home</a>
-                <a class="font-bold text-sm tracking-wide text-on-surface-variant hover:text-primary transition-colors" href="attractions.html">Attractions</a>
-                <a class="font-bold text-sm tracking-wide text-on-surface-variant hover:text-primary transition-colors" href="history.html">History</a>
-            </div>
-            <div class="flex items-center gap-6">
-                <a id="navLoginBtn" href="login.html" class="font-bold text-sm text-primary hover:underline">Log In</a>
-                <a href="booking.html" class="bg-primary text-white px-6 py-2 rounded-lg font-bold shadow-sm hover:opacity-90">Book Tour</a>
-            </div>
+<nav class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-md shadow-[0_20px_40px_rgba(0,27,61,0.06)]">
+    <div class="flex justify-between items-center px-12 py-6 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="font-headline text-2xl font-bold tracking-tighter text-[#00509d]">Kanyakumari</a>
+        
+        <div class="hidden md:flex items-center space-x-8 font-headline text-lg tracking-tight">
+            <a class="text-[#00509d] font-bold border-b-2 border-[#00509d] pb-1" href="index.html">Home</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="attractions.html">Attractions</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="history.html">History</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="markets.html">Markets</a>
         </div>
-    </nav>
+        
+        <div class="flex items-center gap-6">
+            <a href="login.html" class="hidden md:block font-label font-bold text-sm tracking-wide uppercase text-primary hover:opacity-70 transition-opacity">Log In</a>
+            <a href="booking.html" class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label font-bold text-sm tracking-wide uppercase transition-all hover:scale-105 shadow-md">Book Now</a>
+        </div>
+    </div>
+</nav>
 
-    <header class="relative h-screen flex items-center justify-center overflow-hidden">
-        <img class="absolute inset-0 w-full h-full object-cover" src="https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?q=80&w=2000&auto=format&fit=crop" alt="Kanyakumari Coast">
-        <div class="absolute inset-0 bg-primary/40"></div>
+<main>
+    <section class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img alt="Sunrise at Vivekananda Rock Memorial" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPw7WjwR7xLX7OI1q3pgYXfMe5ONJhBfnJ9tNvsXlLvRBhS2o2XLpkrJDVKbvRpxSgJ7Pj0ppSZnNw9h_K3TBlR1h4Z9UDxr5kkts0A8utTW0RJ7iuiIhyXky2Iv6QSlH9w24CABec37vQGGDhnENn5Yl6G9PxP8aWi-qfdK-6xGb-cFLSLQo4M3VFwcDIti92M2dDl4D0vUh3up1k5wFFIuaXbJiwCWy-mymZ-ukMGYCohKB2GPMCIzIZKIgk8k5baD7IEYpPsKA"/>
+            <div class="absolute inset-0 bg-black/50 backdrop-brightness-75"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-primary/40 via-transparent to-primary/60"></div>
+        </div>
         <div class="relative z-10 text-center px-6">
-            <span class="text-white font-bold tracking-widest uppercase text-sm mb-4 block drop-shadow-md">The Southernmost Tip of India</span>
-            <h1 class="text-6xl md:text-8xl font-headline font-bold text-white mb-6 drop-shadow-lg">Where Oceans Meet.</h1>
-            <p class="text-xl text-white/90 max-w-2xl mx-auto mb-10 drop-shadow-md font-medium">Experience the rich history, vibrant markets, and the spectacular sunrise of Kanyakumari.</p>
-            <a href="booking.html" class="bg-secondary-container text-[#603100] px-8 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-transform shadow-xl">Plan Your Journey</a>
+            <span class="block font-label text-white/90 text-sm tracking-[0.3em] uppercase mb-4 drop-shadow-md">The Southernmost Tip of India</span>
+            <h1 class="font-headline text-6xl md:text-8xl text-white font-bold tracking-tighter mb-8 max-w-4xl mx-auto leading-tight drop-shadow-lg">Where Three Seas Meet</h1>
+            <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+                <a href="attractions.html" class="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-all">Explore Destinations</a>
+                <a href="booking.html" class="text-white border-b-2 border-white/50 hover:border-white py-2 px-4 transition-all font-semibold">Watch the Sunrise</a>
+            </div>
         </div>
-    </header>
+    </section>
 
-    <button id="chatToggle" class="fixed bottom-6 right-6 z-50 bg-primary text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform">
+    <section class="py-32 px-12 bg-surface-container-low relative overflow-hidden">
+        <div class="max-w-screen-xl mx-auto text-center relative z-10">
+            <h2 class="font-headline text-5xl md:text-6xl text-primary font-bold mb-8">Your Coastal Journey Awaits</h2>
+            <p class="text-on-surface-variant text-xl font-light mb-12 max-w-2xl mx-auto">Join our expert guides for a sunset tour of the memorial, local market explorations, and a journey into the history of the southern tip.</p>
+            <a href="booking.html" class="inline-block bg-secondary-container text-on-secondary-container px-10 py-5 rounded-lg font-bold text-xl hover:scale-105 transition-all shadow-lg">Book Sunrise Tour</a>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-surface-container-low w-full py-16 px-12 mt-20">
+    <div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
+        <div>
+            <h2 class="font-headline text-2xl text-[#00509d] font-bold mb-6">Kanyakumari</h2>
+            <p class="text-on-surface-variant/70 text-sm leading-loose max-w-xs">Curating the finest coastal experiences where the three seas meet. An editorial journey into the soul of the south.</p>
+        </div>
+        <div class="flex flex-col gap-4">
+            <span class="font-label text-sm tracking-wide uppercase font-bold text-[#00509d]">Explore</span>
+            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4" href="attractions.html">Attractions</a>
+            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4" href="history.html">History</a>
+            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4" href="markets.html">Markets</a>
+        </div>
+        <div class="flex flex-col gap-4">
+            <span class="font-label text-sm tracking-wide uppercase font-bold text-[#00509d]">Newsletter</span>
+            <div class="flex gap-2">
+                <input id="emailInput" class="bg-surface border-none rounded-lg px-4 py-3 text-sm flex-grow focus:ring-1 focus:ring-primary" placeholder="Email address" type="email"/>
+                <button id="subscribeBtn" class="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm">Join</button>
+            </div>
+            <p class="text-[10px] text-on-surface-variant/50 mt-8">© 2024 The Horizon Observer.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('subscribeBtn').addEventListener('click', async () => {
+        const email = document.getElementById('emailInput').value;
+        const btn = document.getElementById('subscribeBtn');
+        
+        if(!email) return alert("Please enter an email");
+        
+        btn.innerText = "Sending...";
+        
+        try {
+            // NOTE: REPLACE THIS URL with your actual Render API link once you deploy your backend!
+            const response = await fetch('https://kanyakumari-portal.onrender.com/api/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            });
+            
+            if(response.ok) {
+                btn.innerText = "Subscribed!";
+                btn.style.backgroundColor = "green";
+                document.getElementById('emailInput').value = ''; 
+            } else {
+                btn.innerText = "Error"; 
+                btn.style.backgroundColor = "red";
+            }
+        } catch (error) {
+            console.error(error); 
+            btn.innerText = "Failed"; 
+            btn.style.backgroundColor = "red";
+        }
+    });
+</script>
+
+<script>
+    // --- PASTE YOUR SUPABASE KEYS HERE ---
+    const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+    
+    if (window.supabase) {
+        const supabaseAuth = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function updateNavbar() {
+            const { data: { user } } = await supabaseAuth.auth.getUser();
+            
+            if (user) {
+                // Find the Login link and change it to Dashboard
+                const loginLinks = document.querySelectorAll('a[href="login.html"]');
+                loginLinks.forEach(link => {
+                    link.href = "dashboard.html";
+                    link.innerText = "My Dashboard";
+                    link.classList.add("bg-secondary-container", "text-on-secondary-container", "px-4", "py-2", "rounded-lg");
+                    link.classList.remove("text-primary");
+                });
+            }
+        }
+        updateNavbar();
+    } else {
+        console.warn("Supabase library not loaded correctly.");
+    }
+</script>
+<button id="chatToggle" class="fixed bottom-6 right-6 z-50 bg-primary text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform">
         <span class="material-symbols-outlined text-3xl">support_agent</span>
     </button>
 
@@ -85,25 +204,6 @@
     </div>
 
     <script>
-        // --- 1. SUPABASE AUTH CHECK FOR NAVBAR ---
-        const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
-        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        async function updateNavbar() {
-            const { data: { user } } = await db.auth.getUser();
-            if (user) {
-                const loginBtn = document.getElementById('navLoginBtn');
-                loginBtn.href = "dashboard.html";
-                loginBtn.innerText = "My Dashboard";
-                loginBtn.className = "bg-secondary-container text-[#603100] px-4 py-2 rounded-lg font-bold text-sm shadow-sm";
-            }
-        }
-        updateNavbar();
-
-
-        // --- 2. AI CHATBOT LOGIC ---
-        
         // 🛑 PASTE YOUR GEMINI API KEY HERE!
         const GEMINI_API_KEY = "AIzaSyCi5SOVGzGSJwAU1krX37zpzE9KbPJb_jw"; 
 
@@ -137,7 +237,6 @@
 
             // 3. Call Gemini API
             try {
-                // We add a "System Prompt" to make sure the AI acts like a local guide
                 const promptContext = "You are a friendly, enthusiastic local tour guide in Kanyakumari, India. Keep your answers short (2-3 sentences max) and helpful. The user asks: " + text;
 
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
@@ -161,7 +260,7 @@
 
             } catch (error) {
                 document.getElementById(typingId).remove();
-                appendMessage('ai', "Sorry, I'm having trouble connecting to my brain right now! Please try again.");
+                appendMessage('ai', "Sorry, I'm having trouble connecting right now! Please try again.");
                 console.error("AI Error:", error);
             }
         }
