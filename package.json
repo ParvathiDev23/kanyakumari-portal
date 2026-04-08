@@ -1,0 +1,12 @@
+{
+  "name": "kanyakumari-portal",
+  "version": "1.0.0",
+  "description": "Kanyakumari Tourism Portal with AI Guide",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.101.1"
+  }
+}
