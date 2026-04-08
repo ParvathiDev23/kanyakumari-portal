@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Staff Portal | Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-900 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-md">
+        <div class="text-center mb-10">
+            <h1 class="text-2xl font-bold text-slate-800">Staff Authentication</h1>
+            <p class="text-slate-500 text-sm mt-2">Kanyakumari Portal Administration</p>
+        </div>
+        
+        <form id="adminLoginForm" class="space-y-6">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Admin Email</label>
+                <input type="email" id="email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Password</label>
+                <input type="password" id="password" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <button type="submit" id="loginBtn" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-all">
+                Enter Dashboard
+            </button>
+        </form>
+        <p id="errorMsg" class="text-red-500 text-sm mt-4 text-center"></p>
+        <a href="index.html" class="block text-center text-slate-400 text-xs mt-8 hover:underline">Back to Main Site</a>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+
+            btn.innerText = "Verifying...";
+
+            // 1. Sign in via Supabase
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                document.getElementById('errorMsg').innerText = error.message;
+                btn.innerText = "Enter Dashboard";
+            } else {
+                // 2. Set the "Secret" Admin Flag
+                // This keeps your admin session separate from user sessions
+                localStorage.setItem('portal_role', 'admin');
+                window.location.href = "admin.html";
+            }
+        });
+    </script>
+</body>
+</html>

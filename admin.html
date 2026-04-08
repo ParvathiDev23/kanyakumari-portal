@@ -86,15 +86,18 @@
 
     // 3. Auth Check
     async function checkAuth() {
-        const { data: { user }, error } = await supabaseClient.auth.getUser();
-        if (!user || error) {
-            console.log("No user found, redirecting...");
-            window.location.href = "login.html"; 
-        } else {
-            document.getElementById('adminBody').classList.remove('hidden');
-        }
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    const role = localStorage.getItem('portal_role');
+
+    // ONLY let them in if they are logged in AND have the admin flag
+    if (!user || role !== 'admin') {
+        console.log("Access Denied: Not an admin.");
+        window.location.href = "admin-login.html"; 
+    } else {
+        document.getElementById('adminBody').classList.remove('hidden');
     }
-    checkAuth();
+}
+checkAuth();
 
     // 4. Form Handling
     const form = document.getElementById('vendorForm');
@@ -129,9 +132,10 @@
     });
 
     async function handleLogout() {
-        await supabaseClient.auth.signOut();
-        window.location.href = "index.html";
-    }
+    await supabaseClient.auth.signOut();
+    localStorage.removeItem('portal_role'); // Clear the admin flag
+    window.location.href = "index.html";
+}
 </script>
 </body>
 </html>
