@@ -77,57 +77,61 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // 1. Define credentials
+    const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+    
+    // 2. Initialize ONLY ONCE
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // SECURITY CHECK: Only let logged in users stay
-        async function checkAuth() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                window.location.href = "login.html"; // Redirect if not logged in
-            } else {
-                document.getElementById('adminBody').classList.remove('hidden');
-            }
+    // 3. Auth Check
+    async function checkAuth() {
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
+        if (!user || error) {
+            console.log("No user found, redirecting...");
+            window.location.href = "login.html"; 
+        } else {
+            document.getElementById('adminBody').classList.remove('hidden');
         }
-        checkAuth();
+    }
+    checkAuth();
 
-        // FORM SUBMISSION
-        const form = document.getElementById('vendorForm');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('status');
-            
-            btn.innerText = "Processing...";
-            btn.disabled = true;
+    // 4. Form Handling
+    const form = document.getElementById('vendorForm');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('status');
+        
+        btn.innerText = "Processing...";
+        btn.disabled = true;
 
-            const { error } = await supabase.from('vendors').insert([{
-                name: document.getElementById('name').value,
-                category: document.getElementById('category').value,
-                price_range: document.getElementById('price').value,
-                image_url: document.getElementById('image').value,
-                contact: document.getElementById('contact').value,
-                description: document.getElementById('desc').value
-            }]);
+        const { error } = await supabaseClient.from('vendors').insert([{
+            name: document.getElementById('name').value,
+            category: document.getElementById('category').value,
+            price_range: document.getElementById('price').value,
+            image_url: document.getElementById('image').value,
+            contact: document.getElementById('contact').value,
+            description: document.getElementById('desc').value
+        }]);
 
-            if (error) {
-                status.innerText = "Error: " + error.message;
-                status.className = "text-red-500 mt-4 text-center font-bold";
-            } else {
-                status.innerText = "Success! Vendor added to Markets page.";
-                status.className = "text-green-500 mt-4 text-center font-bold";
-                form.reset();
-            }
-            
-            btn.innerText = "Publish to Directory";
-            btn.disabled = false;
-        });
-
-        async function handleLogout() {
-            await supabase.auth.signOut();
-            window.location.href = "index.html";
+        if (error) {
+            status.innerText = "Error: " + error.message;
+            status.className = "text-red-500 mt-4 text-center font-bold";
+        } else {
+            status.innerText = "Success! Vendor added to Markets page.";
+            status.className = "text-green-500 mt-4 text-center font-bold";
+            form.reset();
         }
-    </script>
+        
+        btn.innerText = "Publish to Directory";
+        btn.disabled = false;
+    });
+
+    async function handleLogout() {
+        await supabaseClient.auth.signOut();
+        window.location.href = "index.html";
+    }
+</script>
 </body>
 </html>
