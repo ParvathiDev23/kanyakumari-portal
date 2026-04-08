@@ -222,7 +222,7 @@
             const promptContext = "You are a friendly, enthusiastic local tour guide in Kanyakumari, India. Keep your answers short (2-3 sentences max) and helpful. The user asks: " + text;
             
             // 🚀 We are now securely fetching from YOUR backend file, not Google directly
-            const response = await fetch(`/api/chat`, {
+            const response = await fetch(`/api/ask`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: promptContext })
