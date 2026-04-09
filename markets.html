@@ -111,7 +111,8 @@
     const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
     
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // FIXED: Renamed to supabaseClient to prevent the crash
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     let allVendors = [];
 
     // Initialize Page
@@ -121,7 +122,7 @@
     }
 
     async function updateNavbar() {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await supabaseClient.auth.getUser();
         if (user) {
             const loginLink = document.getElementById('navLogin');
             if(loginLink) {
@@ -133,15 +134,15 @@
     }
 
     async function fetchVendors() {
-        const { data, error } = await supabase.from('vendors').select('*').order('created_at', { ascending: false });
+        // FIXED: Using supabaseClient here
+        const { data, error } = await supabaseClient.from('vendors').select('*').order('created_at', { ascending: false });
         
-        // 1. If Supabase throws a hard error
         if (error) {
             document.getElementById('vendorGrid').innerHTML = `<p class='col-span-full text-center text-red-500 font-bold p-8 bg-red-50 rounded-xl'>Database Error: ${error.message}</p>`;
             return;
         }
 
-        // 2. If Supabase hides the data because of Security (RLS)
+        // RLS Warning check
         if (data && data.length === 0) {
             document.getElementById('vendorGrid').innerHTML = `
                 <div class='col-span-full text-center p-8 bg-orange-50 rounded-xl border border-orange-200'>
@@ -152,7 +153,6 @@
             return;
         }
 
-        // 3. If it successfully reads the data
         allVendors = data;
         renderVendors(data);
     }
@@ -189,11 +189,9 @@
     }
 
     function filterVendors(category, btnElement) {
-        // Update Button UI
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active-filter'));
         btnElement.classList.add('active-filter');
 
-        // Filter Logic
         if (category === 'all') renderVendors(allVendors);
         else renderVendors(allVendors.filter(v => v.category === category));
     }
