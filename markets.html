@@ -111,7 +111,7 @@
     const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
     
-    // FIXED: Renamed to supabaseClient to prevent the crash
+    // Using supabaseClient to prevent variable collision
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     let allVendors = [];
 
@@ -134,7 +134,6 @@
     }
 
     async function fetchVendors() {
-        // FIXED: Using supabaseClient here
         const { data, error } = await supabaseClient.from('vendors').select('*').order('created_at', { ascending: false });
         
         if (error) {
@@ -142,7 +141,6 @@
             return;
         }
 
-        // RLS Warning check
         if (data && data.length === 0) {
             document.getElementById('vendorGrid').innerHTML = `
                 <div class='col-span-full text-center p-8 bg-orange-50 rounded-xl border border-orange-200'>
@@ -165,23 +163,31 @@
         }
 
         grid.innerHTML = list.map(v => `
-            <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100">
-                <div class="relative h-48 overflow-hidden">
+            <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col">
+                <div class="relative h-48 overflow-hidden shrink-0">
                     <img src="${v.image_url || 'https://via.placeholder.com/400x300?text=No+Image'}" 
                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                     <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary">
                         ${v.category}
                     </div>
                 </div>
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-headline font-bold text-lg text-primary">${v.name}</h3>
-                        <span class="text-secondary font-bold text-sm">${v.price_range}</span>
+                <div class="p-6 flex flex-col justify-between flex-grow">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-headline font-bold text-lg text-primary">${v.name}</h3>
+                            <span class="text-secondary font-bold text-sm">${v.price_range}</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant line-clamp-2 mb-4 h-8">${v.description || 'No description provided.'}</p>
                     </div>
-                    <p class="text-xs text-on-surface-variant line-clamp-2 mb-4 h-8">${v.description || 'No description provided.'}</p>
-                    <div class="flex items-center gap-2 text-primary pt-4 border-t border-gray-50">
-                        <span class="material-symbols-outlined text-sm">call</span>
-                        <span class="text-[11px] font-bold tracking-tight">${v.contact}</span>
+                    
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-50 mt-auto">
+                        <div class="flex items-center gap-1 text-primary">
+                            <span class="material-symbols-outlined text-sm">call</span>
+                            <span class="text-[10px] font-bold tracking-tight">${v.contact}</span>
+                        </div>
+                        <a href="checkout.html?vendor=${encodeURIComponent(v.name)}&category=${encodeURIComponent(v.category)}" class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition-transform">
+                            Book Now
+                        </a>
                     </div>
                 </div>
             </div>

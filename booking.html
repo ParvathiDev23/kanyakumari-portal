@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Kanyakumari | Sunrise Serenity Tour Booking</title>
+    <title>Kanyakumari | Secure Booking</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -11,7 +11,6 @@
     <script id="tailwind-config">
       tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "secondary-container": "#fd8b00", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
     </script>
-    <style>.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }</style>
 </head>
 <body class="bg-surface font-body text-[#191c1d] overflow-x-hidden pt-24">
 
@@ -24,8 +23,8 @@
 
 <main class="p-6 md:p-12 max-w-4xl mx-auto mt-10">
     <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-        <h1 class="text-4xl text-primary font-bold mb-2 font-headline">Sunrise Serenity Tour</h1>
-        <p class="text-on-surface-variant mb-8">Book your spot for the magical confluence of the three seas.</p>
+        <h1 id="pageTitle" class="text-4xl text-primary font-bold mb-2 font-headline">Sunrise Serenity Tour</h1>
+        <p id="pageDesc" class="text-on-surface-variant mb-8">Book your spot for the magical confluence of the three seas.</p>
 
         <form id="bookingForm" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -33,9 +32,10 @@
                     <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">Select Date</label>
                     <input id="tourDate" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 focus:ring-2 focus:ring-primary" type="date" required/>
                 </div>
-                <div>
+                
+                <div id="timeSlotContainer">
                     <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">Time Slot</label>
-                    <select id="timeSlot" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 focus:ring-2 focus:ring-primary" required>
+                    <select id="timeSlot" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 focus:ring-2 focus:ring-primary">
                         <option value="5:00 AM">5:00 AM - Sunrise Special</option>
                         <option value="9:00 AM">9:00 AM - Morning Tour</option>
                     </select>
@@ -44,10 +44,11 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">Total Guests</label>
+                    <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">Total Guests / Qty</label>
                     <input id="guestCount" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 focus:ring-2 focus:ring-primary" type="number" min="1" max="10" value="2" required/>
                 </div>
-                <div class="flex flex-col justify-end">
+                
+                <div id="priceContainer" class="flex flex-col justify-end">
                     <p class="text-sm font-bold text-on-surface-variant">Estimated Total (₹2,500/person)</p>
                     <p class="text-3xl font-bold text-primary" id="priceDisplay">₹5,000</p>
                 </div>
@@ -67,12 +68,46 @@
     const MY_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
     const db = window.supabase.createClient(MY_URL, MY_KEY);
 
-    // Dynamic Price Calculator
+    // --- SMART LOGIC START ---
+    // 1. Read the sticky notes from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const vendorName = urlParams.get('vendor');
+    const category = urlParams.get('category');
+    
+    // Default mode is the Sunrise Tour
+    let isVendorBooking = false;
+    let finalBookingName = "Sunrise Serenity Tour";
+
+    // If a vendor name is found in the URL, switch to "Local Partner Mode"
+    if (vendorName) {
+        isVendorBooking = true;
+        finalBookingName = vendorName; // Save this for the database
+
+        // Change the UI
+        document.getElementById('pageTitle').innerText = vendorName;
+        document.getElementById('pageDesc').innerText = `Secure your ${category || 'reservation'} with this local partner.`;
+        
+        // Hide the Sunrise times
+        document.getElementById('timeSlotContainer').classList.add('hidden');
+        document.getElementById('timeSlot').value = 'N/A'; // Default value so DB doesn't crash
+        
+        // Change the price display
+        document.getElementById('priceContainer').innerHTML = `
+            <p class="text-sm font-bold text-on-surface-variant">Estimated Total</p>
+            <p class="text-3xl font-bold text-primary">Pay at Venue</p>
+        `;
+    }
+    // --- SMART LOGIC END ---
+
+    // Dynamic Price Calculator (Only runs if it's the Sunrise Tour)
     const guestInput = document.getElementById('guestCount');
     const priceDisplay = document.getElementById('priceDisplay');
+    
     guestInput.addEventListener('input', () => {
-        const guests = guestInput.value || 0;
-        priceDisplay.innerText = `₹${(guests * 2500).toLocaleString()}`;
+        if (!isVendorBooking) {
+            const guests = guestInput.value || 0;
+            priceDisplay.innerText = `₹${(guests * 2500).toLocaleString()}`;
+        }
     });
 
     // Handle Form Submission
@@ -83,30 +118,35 @@
         
         btn.innerText = "Processing...";
 
-        // 1. Verify the user is logged in
         const { data: { user } } = await db.auth.getUser();
         
         if (!user) {
-            msg.innerText = "You must be logged in to book a tour!";
+            msg.innerText = "You must be logged in to book!";
             msg.className = "text-center font-bold text-red-500 block";
             btn.innerText = "Confirm Booking";
             return;
         }
 
-        // 2. Gather form data
         const date = document.getElementById('tourDate').value;
         const slot = document.getElementById('timeSlot').value;
         const guests = guestInput.value;
-        const total = guests * 2500;
+        const total = isVendorBooking ? 0 : (guests * 2500); // 0 total if paying at venue
 
-        // 3. Send to Supabase
+        // Send to Supabase (Notice the new 'vendor_name' column!)
         const { error } = await db.from('bookings').insert([
-            { user_email: user.email, tour_date: date, time_slot: slot, guests: guests, total_price: total }
+            { 
+                user_email: user.email, 
+                vendor_name: finalBookingName, // Tells us WHAT they booked
+                tour_date: date, 
+                time_slot: slot, 
+                guests: guests, 
+                total_price: total 
+            }
         ]);
 
         if (error) {
-            msg.innerText = "Error saving booking: " + error.message;
-            msg.className = "text-center font-bold text-red-500 block";
+            msg.innerText = "Error: " + error.message;
+            msg.className = "text-center font-bold text-red-500 block mt-4";
             btn.innerText = "Confirm Booking";
         } else {
             btn.style.backgroundColor = "green";
