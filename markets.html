@@ -134,11 +134,25 @@
 
     async function fetchVendors() {
         const { data, error } = await supabase.from('vendors').select('*').order('created_at', { ascending: false });
+        
+        // 1. If Supabase throws a hard error
         if (error) {
-            console.error("Fetch Error:", error);
-            document.getElementById('vendorGrid').innerHTML = "<p class='col-span-full text-center'>Connection Error. Check Supabase table.</p>";
+            document.getElementById('vendorGrid').innerHTML = `<p class='col-span-full text-center text-red-500 font-bold p-8 bg-red-50 rounded-xl'>Database Error: ${error.message}</p>`;
             return;
         }
+
+        // 2. If Supabase hides the data because of Security (RLS)
+        if (data && data.length === 0) {
+            document.getElementById('vendorGrid').innerHTML = `
+                <div class='col-span-full text-center p-8 bg-orange-50 rounded-xl border border-orange-200'>
+                    <h3 class='text-orange-600 font-bold text-xl mb-2'>Data is Hidden by Supabase</h3>
+                    <p class='text-orange-800 mb-4'>Your code is working, but Supabase Security (RLS) is blocking the public from seeing the vendors.</p>
+                    <p class='text-sm text-orange-700 font-bold'>To fix this: Go to Supabase -> Table Editor -> 'vendors' -> Edit Table -> Turn OFF 'Enable Row Level Security (RLS)' -> Save.</p>
+                </div>`;
+            return;
+        }
+
+        // 3. If it successfully reads the data
         allVendors = data;
         renderVendors(data);
     }
