@@ -30,9 +30,8 @@
                 <form id="vendorForm" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Vendor Name</label>
-                        <input type="text" id="name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none">
+                        <input type="text" id="name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none">
                     </div>
-
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-bold text-slate-700 mb-2">Category</label>
@@ -51,22 +50,18 @@
                             </select>
                         </div>
                     </div>
-
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Image URL (Unsplash Link)</label>
-                        <input type="url" id="image" placeholder="https://images.unsplash.com/..." class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Image URL</label>
+                        <input type="url" id="image" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none">
                     </div>
-
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Contact Number/Info</label>
-                        <input type="text" id="contact" placeholder="+91..." class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Contact Number</label>
+                        <input type="text" id="contact" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none">
                     </div>
-
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Short Description</label>
                         <textarea id="desc" rows="3" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none"></textarea>
                     </div>
-
                     <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition-all">
                         Publish to Directory
                     </button>
@@ -77,65 +72,59 @@
     </div>
 
     <script>
-    // 1. Define credentials
-    const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
-    
-    // 2. Initialize ONLY ONCE
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // 3. Auth Check
-    async function checkAuth() {
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    const role = localStorage.getItem('portal_role');
+        // Security Check
+        async function checkAuth() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            const role = localStorage.getItem('portal_role');
 
-    // ONLY let them in if they are logged in AND have the admin flag
-    if (!user || role !== 'admin') {
-        console.log("Access Denied: Not an admin.");
-        window.location.href = "admin-login.html"; 
-    } else {
-        document.getElementById('adminBody').classList.remove('hidden');
-    }
-}
-checkAuth();
-
-    // 4. Form Handling
-    const form = document.getElementById('vendorForm');
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        const status = document.getElementById('status');
-        
-        btn.innerText = "Processing...";
-        btn.disabled = true;
-
-        const { error } = await supabaseClient.from('vendors').insert([{
-            name: document.getElementById('name').value,
-            category: document.getElementById('category').value,
-            price_range: document.getElementById('price').value,
-            image_url: document.getElementById('image').value,
-            contact: document.getElementById('contact').value,
-            description: document.getElementById('desc').value
-        }]);
-
-        if (error) {
-            status.innerText = "Error: " + error.message;
-            status.className = "text-red-500 mt-4 text-center font-bold";
-        } else {
-            status.innerText = "Success! Vendor added to Markets page.";
-            status.className = "text-green-500 mt-4 text-center font-bold";
-            form.reset();
+            if (!user || role !== 'admin') {
+                window.location.href = "admin-login.html"; 
+            } else {
+                document.getElementById('adminBody').classList.remove('hidden');
+            }
         }
-        
-        btn.innerText = "Publish to Directory";
-        btn.disabled = false;
-    });
+        checkAuth();
 
-    async function handleLogout() {
-    await supabaseClient.auth.signOut();
-    localStorage.removeItem('portal_role'); // Clear the admin flag
-    window.location.href = "index.html";
-}
-</script>
+        // Submit Form
+        document.getElementById('vendorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('status');
+            
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+
+            const { error } = await supabaseClient.from('vendors').insert([{
+                name: document.getElementById('name').value,
+                category: document.getElementById('category').value,
+                price_range: document.getElementById('price').value,
+                image_url: document.getElementById('image').value,
+                contact: document.getElementById('contact').value,
+                description: document.getElementById('desc').value
+            }]);
+
+            if (error) {
+                status.innerText = "Error: " + error.message;
+                status.className = "text-red-500 mt-4 text-center font-bold";
+            } else {
+                status.innerText = "Success! Vendor added.";
+                status.className = "text-green-500 mt-4 text-center font-bold";
+                document.getElementById('vendorForm').reset();
+            }
+            btn.innerText = "Publish to Directory";
+            btn.disabled = false;
+        });
+
+        // Logout
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+            localStorage.removeItem('portal_role');
+            window.location.href = "index.html";
+        }
+    </script>
 </body>
 </html>

@@ -34,7 +34,9 @@
     <script>
         const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // FIXED: Changed variable name to supabaseClient to avoid crashes
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -44,15 +46,13 @@
 
             btn.innerText = "Verifying...";
 
-            // 1. Sign in via Supabase
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
             if (error) {
                 document.getElementById('errorMsg').innerText = error.message;
                 btn.innerText = "Enter Dashboard";
             } else {
-                // 2. Set the "Secret" Admin Flag
-                // This keeps your admin session separate from user sessions
+                // Sets the Admin "Key" in the browser
                 localStorage.setItem('portal_role', 'admin');
                 window.location.href = "admin.html";
             }
