@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
@@ -16,11 +18,14 @@
     <style>
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle;}
         
-        /* Drag and Drop Specific Styles */
-        .draggable-item { cursor: grab; transition: transform 0.2s, box-shadow 0.2s; }
-        .draggable-item:active { cursor: grabbing; transform: scale(0.98); }
-        .drop-zone { min-height: 150px; transition: background-color 0.3s, border-color 0.3s; }
-        .drop-zone.drag-over { background-color: #f0f7ff; border-color: #003974; border-style: solid; }
+        /* SortableJS specific styling */
+        .draggable-item { cursor: grab; }
+        .draggable-item:active { cursor: grabbing; }
+        .drop-zone { min-height: 150px; transition: all 0.3s ease; }
+        
+        /* The style of the card while you are holding it */
+        .sortable-ghost { opacity: 0.4; background-color: #f0f7ff; border: 2px dashed #003974; }
+        .sortable-drag { box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); cursor: grabbing !important; }
     </style>
 </head>
 <body class="bg-surface font-body text-[#191c1d] overflow-x-hidden min-h-screen flex flex-col">
@@ -56,19 +61,19 @@
             </h2>
             <p class="text-xs text-gray-500 mb-6">Click and drag these cards over to your schedule.</p>
             
-            <div id="source-zone" class="drop-zone space-y-4 rounded-xl border-2 border-dashed border-gray-200 p-4 bg-gray-50/50" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div id="source-zone" class="drop-zone space-y-4 rounded-xl border-2 border-dashed border-gray-200 p-4 bg-gray-50/50">
                 
-                <div id="item-rock" class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center" draggable="true" ondragstart="drag(event)">
+                <div class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
                     <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 text-primary">
                         <span class="material-symbols-outlined">sailing</span>
                     </div>
                     <div>
                         <h3 class="font-bold text-primary text-sm">Vivekananda Rock</h3>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">2-3 Hours • Ferry Required</p>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">2-3 Hours • Ferry</p>
                     </div>
                 </div>
 
-                <div id="item-statue" class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center" draggable="true" ondragstart="drag(event)">
+                <div class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
                     <div class="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center shrink-0 text-secondary-container">
                         <span class="material-symbols-outlined">monument</span>
                     </div>
@@ -78,7 +83,7 @@
                     </div>
                 </div>
 
-                <div id="item-temple" class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center" draggable="true" ondragstart="drag(event)">
+                <div class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
                     <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center shrink-0 text-red-600">
                         <span class="material-symbols-outlined">temple_hindu</span>
                     </div>
@@ -88,17 +93,17 @@
                     </div>
                 </div>
 
-                <div id="item-palace" class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center" draggable="true" ondragstart="drag(event)">
+                <div class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
                     <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center shrink-0 text-green-700">
                         <span class="material-symbols-outlined">castle</span>
                     </div>
                     <div>
                         <h3 class="font-bold text-primary text-sm">Padmanabhapuram Palace</h3>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">3 Hours • Historic Site</p>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">3 Hours • Historic</p>
                     </div>
                 </div>
 
-                <div id="item-sunset" class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center" draggable="true" ondragstart="drag(event)">
+                <div class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
                     <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center shrink-0 text-purple-600">
                         <span class="material-symbols-outlined">wb_twilight</span>
                     </div>
@@ -118,8 +123,8 @@
                     <h2 class="text-2xl font-bold text-primary font-headline">Day 1 Schedule</h2>
                     <button onclick="clearZone('day1-zone')" class="text-xs text-red-500 hover:text-red-700 font-bold">Clear Day</button>
                 </div>
-                <div id="day1-zone" class="drop-zone space-y-4 rounded-xl border-2 border-dashed border-gray-300 p-6 bg-gray-50" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-                    <p class="text-center text-gray-400 font-bold empty-msg pointer-events-none mt-8">Drag morning & afternoon activities here.</p>
+                <div id="day1-zone" class="drop-zone space-y-4 rounded-xl border-2 border-dashed border-gray-300 p-6 bg-gray-50 relative">
+                    <p class="text-center text-gray-400 font-bold empty-msg pointer-events-none my-8">Drag morning & afternoon activities here.</p>
                 </div>
             </div>
 
@@ -128,8 +133,8 @@
                     <h2 class="text-2xl font-bold text-primary font-headline">Day 2 Schedule</h2>
                     <button onclick="clearZone('day2-zone')" class="text-xs text-red-500 hover:text-red-700 font-bold">Clear Day</button>
                 </div>
-                <div id="day2-zone" class="drop-zone space-y-4 rounded-xl border-2 border-dashed border-gray-300 p-6 bg-gray-50" ondragover="allowDrop(event)" ondrop="drop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-                    <p class="text-center text-gray-400 font-bold empty-msg pointer-events-none mt-8">Drag remaining activities here.</p>
+                <div id="day2-zone" class="drop-zone space-y-4 rounded-xl border-2 border-dashed border-gray-300 p-6 bg-gray-50 relative">
+                    <p class="text-center text-gray-400 font-bold empty-msg pointer-events-none my-8">Drag remaining activities here.</p>
                 </div>
             </div>
 
@@ -144,66 +149,22 @@
 </footer>
 
 <script>
-    // 1. When you start dragging an item
-    function drag(event) {
-        // FIXED: Use 'text/plain' and 'currentTarget' so it always grabs the whole card, not just the text inside it!
-        event.dataTransfer.setData("text/plain", event.currentTarget.id);
-        
-        // FIXED: A tiny delay prevents Chrome/Safari from making the dragged "ghost" image invisible
-        setTimeout(() => {
-            event.target.style.opacity = "0.4";
-        }, 10);
-    }
-
-    // 2. Allow dropping (Browser blocks this by default!)
-    function allowDrop(event) {
-        event.preventDefault();
-    }
-
-    // 3. Visual feedback when hovering over a drop zone
-    function dragEnter(event) {
-        event.preventDefault();
-        // Only add the blue highlight if we are entering a valid drop zone container
-        let dropZone = event.target.closest('.drop-zone');
-        if(dropZone) {
-            dropZone.classList.add('drag-over');
+    // Configuration that allows all three lists to share items
+    const sortableConfig = {
+        group: 'shared-itinerary', // This tells Sortable they are connected
+        animation: 150, // Smooth sliding animation in milliseconds
+        ghostClass: 'sortable-ghost', // The CSS class applied to the placeholder
+        dragClass: 'sortable-drag', // The CSS class applied to the floating card
+        onEnd: function (evt) {
+            // Runs every time you drop an item
+            checkEmptyStates();
         }
-    }
+    };
 
-    function dragLeave(event) {
-        let dropZone = event.target.closest('.drop-zone');
-        if(dropZone) {
-            dropZone.classList.remove('drag-over');
-        }
-    }
-
-    // 4. The actual Drop
-    function drop(event) {
-        event.preventDefault();
-        
-        // FIXED: Safely find the drop zone even if they drop the card on top of another card
-        let dropZone = event.target.closest('.drop-zone');
-        
-        if (dropZone) {
-            dropZone.classList.remove('drag-over');
-
-            // Read the ID from the "text/plain" envelope
-            var data = event.dataTransfer.getData("text/plain");
-            var draggedElement = document.getElementById(data);
-            
-            if (draggedElement) {
-                draggedElement.style.opacity = "1";
-                dropZone.appendChild(draggedElement);
-                checkEmptyStates();
-            }
-        }
-    }
-
-    // Reset dragging element opacity if they drop it somewhere invalid (like outside the box)
-    document.addEventListener('dragend', function(event) {
-        event.target.style.opacity = "1";
-        document.querySelectorAll('.drop-zone').forEach(zone => zone.classList.remove('drag-over'));
-    });
+    // Initialize the three zones
+    new Sortable(document.getElementById('source-zone'), sortableConfig);
+    new Sortable(document.getElementById('day1-zone'), sortableConfig);
+    new Sortable(document.getElementById('day2-zone'), sortableConfig);
 
     // Helper: Show/Hide the "Drag items here" placeholder text
     function checkEmptyStates() {
@@ -215,12 +176,13 @@
             const itemsCount = zone.querySelectorAll('.draggable-item').length;
             
             if(msg) {
+                // If there are cards in the zone, hide the empty text.
                 msg.style.display = itemsCount > 0 ? 'none' : 'block';
             }
         });
     }
 
-    // Helper: Move items from a Day back to the Source bucket
+    // Helper: Move items from a Day back to the Source bucket using a button
     function clearZone(zoneId) {
         const zone = document.getElementById(zoneId);
         const source = document.getElementById('source-zone');
@@ -232,7 +194,7 @@
         checkEmptyStates();
     }
 
-    // Run once on load
+    // Run once on load to set up the empty messages
     checkEmptyStates();
 </script>
 
