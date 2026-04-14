@@ -3,158 +3,310 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Kanyakumari | Secure Booking</title>
+    <title>Secure Booking | Kanyakumari</title>
+    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&family=Libre+Barcode+39+Text&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
     <script id="tailwind-config">
-      tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "secondary-container": "#fd8b00", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
+      tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "secondary-container": "#fd8b00", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"], "barcode": ["'Libre Barcode 39 Text'", "cursive"] } } } }
     </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle;}
+        
+        /* The Boarding Pass Cutout Effect */
+        .ticket-cutout-left { position: absolute; left: -16px; top: 65%; width: 32px; height: 32px; background-color: #f3f4f5; border-radius: 50%; }
+        .ticket-cutout-right { position: absolute; right: -16px; top: 65%; width: 32px; height: 32px; background-color: #f3f4f5; border-radius: 50%; }
+        .ticket-divider { position: absolute; top: 65%; left: 16px; right: 16px; border-top: 2px dashed #cbd5e1; transform: translateY(16px); }
+        
+        /* Fake Barcode Gradient */
+        .fake-barcode {
+            height: 40px;
+            background: repeating-linear-gradient(
+                90deg,
+                #1e293b,
+                #1e293b 2px,
+                transparent 2px,
+                transparent 4px,
+                #1e293b 4px,
+                #1e293b 5px,
+                transparent 5px,
+                transparent 8px
+            );
+        }
+    </style>
 </head>
-<body class="bg-surface font-body text-[#191c1d] overflow-x-hidden pt-24">
+<body class="bg-surface-container-low font-body text-[#191c1d] overflow-x-hidden min-h-screen flex flex-col hidden" id="pageBody">
 
-<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md shadow-sm">
-    <div class="flex justify-between items-center px-6 py-5 max-w-screen-2xl mx-auto">
+<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md shadow-sm border-b border-gray-100">
+    <div class="flex justify-between items-center px-6 md:px-12 py-5 max-w-screen-2xl mx-auto">
         <a href="index.html" class="font-headline text-2xl font-bold text-primary">Kanyakumari</a>
-        <a href="dashboard.html" class="font-bold text-sm text-primary hover:underline">My Dashboard</a>
+        <div class="flex items-center gap-6">
+            <a href="index.html" class="font-bold text-sm text-on-surface-variant hover:text-primary transition-colors">Home</a>
+            <a href="dashboard.html" class="font-bold text-sm text-on-surface-variant hover:text-primary transition-colors">My Dashboard</a>
+        </div>
     </div>
 </nav>
 
-<main class="p-6 md:p-12 max-w-4xl mx-auto mt-10">
-    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-        <h1 id="pageTitle" class="text-4xl text-primary font-bold mb-2 font-headline">Sunrise Serenity Tour</h1>
-        <p id="pageDesc" class="text-on-surface-variant mb-8">Book your spot for the magical confluence of the three seas.</p>
+<main class="pt-32 pb-24 px-6 md:px-12 max-w-screen-2xl mx-auto flex-grow w-full">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start max-w-6xl mx-auto">
+        
+        <div class="lg:col-span-6 bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-gray-200">
+            <h1 class="text-3xl font-bold text-primary font-headline mb-2">Secure Checkout</h1>
+            <p class="text-on-surface-variant mb-8">Enter your details below. Your e-ticket will update automatically.</p>
+            
+            <form id="bookingForm" class="space-y-6">
+                <input type="hidden" id="vendorName" value="Custom Coastal Tour">
+                <input type="hidden" id="vendorCategory" value="Experience">
 
-        <form id="bookingForm" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">Select Date</label>
-                    <input id="tourDate" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 focus:ring-2 focus:ring-primary" type="date" required/>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Lead Guest Name</label>
+                    <input type="text" id="inputName" required placeholder="e.g. Parvathi" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary focus:outline-none transition-all">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Date</label>
+                        <input type="date" id="inputDate" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary focus:outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Time Slot</label>
+                        <select id="inputTime" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary focus:outline-none transition-all">
+                            <option value="Sunrise (6:00 AM)">Sunrise (6:00 AM)</option>
+                            <option value="Morning (10:00 AM)">Morning (10:00 AM)</option>
+                            <option value="Afternoon (2:00 PM)">Afternoon (2:00 PM)</option>
+                            <option value="Sunset (5:30 PM)">Sunset (5:30 PM)</option>
+                            <option value="Flexible">Flexible / Open Ticket</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Number of Guests</label>
+                    <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-gray-50">
+                        <button type="button" onclick="adjustGuests(-1)" class="w-12 h-12 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors border-r border-gray-200 font-bold text-xl">-</button>
+                        <input type="number" id="inputGuests" value="1" min="1" max="10" readonly class="w-full bg-transparent border-none text-center font-bold focus:ring-0">
+                        <button type="button" onclick="adjustGuests(1)" class="w-12 h-12 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors border-l border-gray-200 font-bold text-xl">+</button>
+                    </div>
+                </div>
+
+                <div class="pt-6 mt-6 border-t border-gray-100">
+                    <button type="submit" id="submitBtn" class="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary/90 transition-all shadow-md flex justify-center items-center gap-2">
+                        <span class="material-symbols-outlined">lock</span>
+                        Confirm Reservation
+                    </button>
+                    <p id="statusMsg" class="text-center font-bold mt-4 hidden"></p>
+                </div>
+            </form>
+        </div>
+
+        <div class="lg:col-span-6 relative perspective-1000">
+            <div class="sticky top-32">
+                <p class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-4 text-center">Live Preview</p>
+                
+                <div class="bg-white rounded-3xl shadow-2xl relative overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
+                    
+                    <div class="p-8 pb-12 bg-gradient-to-br from-[#003974] to-[#001b3d] text-white">
+                        <div class="flex justify-between items-start mb-8">
+                            <div>
+                                <span class="text-[10px] uppercase tracking-widest text-blue-200 font-bold block mb-1">Destination</span>
+                                <h2 id="ticketVendor" class="text-2xl font-headline font-bold">Custom Coastal Tour</h2>
+                            </div>
+                            <span class="material-symbols-outlined text-4xl text-secondary-container">verified</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <span class="text-[10px] uppercase tracking-widest text-blue-200 font-bold block mb-1">Lead Guest</span>
+                                <p id="ticketName" class="font-bold text-lg">GUEST NAME</p>
+                            </div>
+                            <div>
+                                <span class="text-[10px] uppercase tracking-widest text-blue-200 font-bold block mb-1">Guests</span>
+                                <p id="ticketGuests" class="font-bold text-lg">1 Explorer</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ticket-cutout-left"></div>
+                    <div class="ticket-cutout-right"></div>
+                    <div class="ticket-divider"></div>
+
+                    <div class="p-8 pt-12 bg-white">
+                        <div class="grid grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-1">Date</span>
+                                <p id="ticketDate" class="font-bold text-gray-800">Select Date</p>
+                            </div>
+                            <div>
+                                <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-1">Time</span>
+                                <p id="ticketTime" class="font-bold text-gray-800">Sunrise (6:00 AM)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-end border-t border-gray-100 pt-6">
+                            <div class="w-1/2">
+                                <div class="fake-barcode w-full opacity-60 mb-1"></div>
+                                <p class="text-[8px] text-gray-400 tracking-widest text-center font-mono" id="ticketId">TKT-829104</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-1">Total Amount</span>
+                                <p id="ticketPrice" class="text-2xl font-bold text-green-600">₹500</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div id="timeSlotContainer">
-                    <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">Time Slot</label>
-                    <select id="timeSlot" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 focus:ring-2 focus:ring-primary">
-                        <option value="5:00 AM">5:00 AM - Sunrise Special</option>
-                        <option value="9:00 AM">9:00 AM - Morning Tour</option>
-                    </select>
-                </div>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">Total Guests / Qty</label>
-                    <input id="guestCount" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 focus:ring-2 focus:ring-primary" type="number" min="1" max="10" value="2" required/>
-                </div>
-                
-                <div id="priceContainer" class="flex flex-col justify-end">
-                    <p class="text-sm font-bold text-on-surface-variant">Estimated Total (₹2,500/person)</p>
-                    <p class="text-3xl font-bold text-primary" id="priceDisplay">₹5,000</p>
-                </div>
-            </div>
-            
-            <p id="bookingMsg" class="text-center font-bold hidden"></p>
+        </div>
 
-            <button type="submit" id="confirmBtn" class="w-full bg-secondary-container text-[#603100] py-5 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity mt-8">
-                Confirm Booking
-            </button>
-        </form>
     </div>
 </main>
 
 <script>
-    const MY_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
-    const MY_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
-    const db = window.supabase.createClient(MY_URL, MY_KEY);
-
-    // --- SMART LOGIC START ---
-    // 1. Read the sticky notes from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const vendorName = urlParams.get('vendor');
-    const category = urlParams.get('category');
+    const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
-    // Default mode is the Sunrise Tour
-    let isVendorBooking = false;
-    let finalBookingName = "Sunrise Serenity Tour";
+    let currentUser = null;
+    let basePrice = 500; // Default price per person
 
-    // If a vendor name is found in the URL, switch to "Local Partner Mode"
-    if (vendorName) {
-        isVendorBooking = true;
-        finalBookingName = vendorName; // Save this for the database
-
-        // Change the UI
-        document.getElementById('pageTitle').innerText = vendorName;
-        document.getElementById('pageDesc').innerText = `Secure your ${category || 'reservation'} with this local partner.`;
-        
-        // Hide the Sunrise times
-        document.getElementById('timeSlotContainer').classList.add('hidden');
-        document.getElementById('timeSlot').value = 'N/A'; // Default value so DB doesn't crash
-        
-        // Change the price display
-        document.getElementById('priceContainer').innerHTML = `
-            <p class="text-sm font-bold text-on-surface-variant">Estimated Total</p>
-            <p class="text-3xl font-bold text-primary">Pay at Venue</p>
-        `;
-    }
-    // --- SMART LOGIC END ---
-
-    // Dynamic Price Calculator (Only runs if it's the Sunrise Tour)
-    const guestInput = document.getElementById('guestCount');
-    const priceDisplay = document.getElementById('priceDisplay');
-    
-    guestInput.addEventListener('input', () => {
-        if (!isVendorBooking) {
-            const guests = guestInput.value || 0;
-            priceDisplay.innerText = `₹${(guests * 2500).toLocaleString()}`;
+    // 1. Security Check: Are they logged in?
+    async function checkAuth() {
+        const { data: { user } } = await db.auth.getUser();
+        if (!user) {
+            // Force them to login before they can book
+            window.location.href = "login.html";
+        } else {
+            currentUser = user;
+            document.getElementById('pageBody').classList.remove('hidden');
+            parseUrlParameters();
         }
+    }
+
+    // 2. The Smart Fill Logic (Reads ?vendor= from the URL)
+    function parseUrlParameters() {
+        const params = new URLSearchParams(window.location.search);
+        const vendor = params.get('vendor');
+        const category = params.get('category');
+
+        if (vendor) {
+            // Update hidden inputs
+            document.getElementById('vendorName').value = vendor;
+            document.getElementById('vendorCategory').value = category || 'Experience';
+            
+            // Update the physical ticket
+            document.getElementById('ticketVendor').innerText = vendor;
+
+            // Simple logic: If it's a "Stay" or specific hotel, we might change the price.
+            // For now, let's say all attractions are ₹500 per head, and Stays are ₹2000.
+            if (category === 'Stay') { basePrice = 2000; }
+            else if (category === 'Market') { basePrice = 0; } // Markets are free entry!
+            
+            updatePrice();
+        }
+    }
+
+    // 3. Live DOM Updates (The magic behind the split screen)
+    const inputs = {
+        name: document.getElementById('inputName'),
+        date: document.getElementById('inputDate'),
+        time: document.getElementById('inputTime'),
+        guests: document.getElementById('inputGuests')
+    };
+
+    inputs.name.addEventListener('input', (e) => {
+        document.getElementById('ticketName').innerText = e.target.value.toUpperCase() || 'GUEST NAME';
     });
 
-    // Handle Form Submission
+    inputs.date.addEventListener('change', (e) => {
+        const dateObj = new Date(e.target.value);
+        // Formats date nicely, e.g., "Oct 24, 2026"
+        document.getElementById('ticketDate').innerText = isNaN(dateObj) ? 'Select Date' : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    });
+
+    inputs.time.addEventListener('change', (e) => {
+        document.getElementById('ticketTime').innerText = e.target.value;
+    });
+
+    // Custom Guest Adjuster
+    window.adjustGuests = function(amount) {
+        let current = parseInt(inputs.guests.value);
+        let newValue = current + amount;
+        
+        if (newValue >= 1 && newValue <= 10) {
+            inputs.guests.value = newValue;
+            document.getElementById('ticketGuests').innerText = `${newValue} Explorer${newValue > 1 ? 's' : ''}`;
+            updatePrice();
+        }
+    }
+
+    function updatePrice() {
+        const guests = parseInt(inputs.guests.value);
+        const total = guests * basePrice;
+        
+        const priceLabel = document.getElementById('ticketPrice');
+        if (total === 0) {
+            priceLabel.innerText = "FREE";
+            priceLabel.className = "text-2xl font-bold text-gray-500";
+        } else {
+            priceLabel.innerText = `₹${total.toLocaleString()}`;
+            priceLabel.className = "text-2xl font-bold text-green-600";
+        }
+    }
+
+    // 4. Form Submission -> Send to Supabase
     document.getElementById('bookingForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const btn = document.getElementById('confirmBtn');
-        const msg = document.getElementById('bookingMsg');
         
-        btn.innerText = "Processing...";
-
-        const { data: { user } } = await db.auth.getUser();
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('statusMsg');
         
-        if (!user) {
-            msg.innerText = "You must be logged in to book!";
-            msg.className = "text-center font-bold text-red-500 block";
-            btn.innerText = "Confirm Booking";
-            return;
-        }
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> Processing...';
+        btn.disabled = true;
 
-        const date = document.getElementById('tourDate').value;
-        const slot = document.getElementById('timeSlot').value;
-        const guests = guestInput.value;
-        const total = isVendorBooking ? 0 : (guests * 2500); // 0 total if paying at venue
+        const guests = parseInt(inputs.guests.value);
 
-        // Send to Supabase (Notice the new 'vendor_name' column!)
-        const { error } = await db.from('bookings').insert([
-            { 
-                user_email: user.email, 
-                vendor_name: finalBookingName, // Tells us WHAT they booked
-                tour_date: date, 
-                time_slot: slot, 
-                guests: guests, 
-                total_price: total 
-            }
-        ]);
+        // Build the data object
+        const bookingData = {
+            user_email: currentUser.email,
+            vendor_name: document.getElementById('vendorName').value,
+            tour_date: inputs.date.value,
+            time_slot: inputs.time.value,
+            guests: guests,
+            total_price: guests * basePrice
+        };
+
+        const { error } = await db.from('bookings').insert([bookingData]);
 
         if (error) {
-            msg.innerText = "Error: " + error.message;
-            msg.className = "text-center font-bold text-red-500 block mt-4";
-            btn.innerText = "Confirm Booking";
+            status.innerText = "Error: " + error.message;
+            status.className = "text-center font-bold mt-4 text-red-500 block";
+            btn.innerHTML = 'Try Again';
+            btn.disabled = false;
         } else {
-            btn.style.backgroundColor = "green";
-            btn.style.color = "white";
-            btn.innerText = "Booking Confirmed! Redirecting...";
-            setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+            // Success! Change UI state
+            status.innerText = "Booking Confirmed! Redirecting...";
+            status.className = "text-center font-bold mt-4 text-green-500 block";
+            btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Success';
+            btn.classList.replace('bg-primary', 'bg-green-600');
+            
+            // Redirect to their dashboard to see it
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 1500);
         }
     });
+
+    // Run Initialization
+    checkAuth();
+
+    // Randomize the barcode ID on load just for fun
+    document.getElementById('ticketId').innerText = 'TKT-' + Math.floor(Math.random() * 900000 + 100000);
 </script>
+
 </body>
 </html>
