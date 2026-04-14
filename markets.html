@@ -33,9 +33,12 @@
       }
     </script>
     <style>
-      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle;}
       .active-filter { background-color: #003974 !important; color: white !important; box-shadow: 0 4px 12px rgba(0,57,116,0.2); }
       .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      
+      /* Smooth fade for filtering */
+      #vendorGrid { transition: opacity 0.3s ease; }
     </style>
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary/10 overflow-x-hidden">
@@ -57,7 +60,7 @@
 </nav>
 
 <main class="pt-32 pb-24">
-    <section class="px-12 max-w-screen-2xl mx-auto mb-32">
+    <section class="px-12 max-w-screen-2xl mx-auto mb-20">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
             <div class="md:col-span-7">
                 <span class="font-body text-xs font-bold tracking-[0.2em] uppercase text-secondary mb-4 block">The Southern Bazaar</span>
@@ -65,24 +68,35 @@
                     The Soul <br/>in the <span class="italic font-normal">Details.</span>
                 </h1>
                 <p class="font-body text-xl text-on-surface-variant max-w-xl leading-relaxed">
-                    Kanyakumari’s markets are a sensory tapestry where the three seas meet the local hands.
+                    Kanyakumari’s markets are a sensory tapestry where the three seas meet the local hands. Search our local partners below.
                 </p>
             </div>
         </div>
     </section>
 
     <section id="directory" class="px-12 max-w-screen-2xl mx-auto mb-48">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 border-b border-outline-variant/30 pb-8">
-            <div>
-                <span class="font-body text-xs font-bold tracking-[0.2em] uppercase text-secondary mb-2 block">Our Partners</span>
-                <h2 class="text-5xl font-headline font-bold text-primary">Local Directory</h2>
-            </div>
+        
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-12 flex flex-col md:flex-row gap-6 items-center justify-between sticky top-28 z-30">
             
-            <div id="filterContainer" class="flex bg-gray-100 p-1 rounded-xl">
-                <button onclick="filterVendors('all', this)" class="filter-btn active-filter px-6 py-2 rounded-lg font-bold text-sm transition-all">All</button>
-                <button onclick="filterVendors('Stay', this)" class="filter-btn px-6 py-2 rounded-lg font-bold text-sm transition-all text-on-surface-variant">Stays</button>
-                <button onclick="filterVendors('Transport', this)" class="filter-btn px-6 py-2 rounded-lg font-bold text-sm transition-all text-on-surface-variant">Transport</button>
-                <button onclick="filterVendors('Market', this)" class="filter-btn px-6 py-2 rounded-lg font-bold text-sm transition-all text-on-surface-variant">Markets</button>
+            <div class="relative w-full md:w-1/3">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                <input type="text" id="searchInput" placeholder="Search hotels, markets, transport..." class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:outline-none transition-all">
+            </div>
+
+            <div class="w-full md:w-48">
+                <select id="priceFilter" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary focus:outline-none cursor-pointer">
+                    <option value="all">Any Price</option>
+                    <option value="₹">₹ (Budget)</option>
+                    <option value="₹₹">₹₹ (Mid-Range)</option>
+                    <option value="₹₹₹">₹₹₹ (Luxury)</option>
+                </select>
+            </div>
+
+            <div id="filterContainer" class="flex bg-gray-100 p-1 rounded-xl w-full md:w-auto overflow-x-auto">
+                <button onclick="setCategory('all', this)" class="filter-btn active-filter px-6 py-2 rounded-lg font-bold text-sm transition-all whitespace-nowrap">All</button>
+                <button onclick="setCategory('Stay', this)" class="filter-btn px-6 py-2 rounded-lg font-bold text-sm transition-all text-on-surface-variant whitespace-nowrap">Stays</button>
+                <button onclick="setCategory('Transport', this)" class="filter-btn px-6 py-2 rounded-lg font-bold text-sm transition-all text-on-surface-variant whitespace-nowrap">Transport</button>
+                <button onclick="setCategory('Market', this)" class="filter-btn px-6 py-2 rounded-lg font-bold text-sm transition-all text-on-surface-variant whitespace-nowrap">Markets</button>
             </div>
         </div>
 
@@ -90,13 +104,7 @@
             <div class="animate-pulse bg-gray-200 h-80 rounded-2xl"></div>
             <div class="animate-pulse bg-gray-200 h-80 rounded-2xl"></div>
             <div class="animate-pulse bg-gray-200 h-80 rounded-2xl"></div>
-        </div>
-    </section>
-
-    <section class="bg-surface-container-low py-32 mb-32">
-        <div class="px-12 max-w-screen-2xl mx-auto text-center">
-            <h2 class="text-5xl font-headline font-bold text-primary mb-8 text-center">Curated Heritage</h2>
-            <p class="max-w-2xl mx-auto text-on-surface-variant mb-12 italic">"Every object here tells a story of the tide or the monsoon."</p>
+            <div class="animate-pulse bg-gray-200 h-80 rounded-2xl"></div>
         </div>
     </section>
 </main>
@@ -111,17 +119,20 @@
     const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
     
-    // Using supabaseClient to prevent variable collision
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    // Global State for filtering
     let allVendors = [];
+    let currentCategory = 'all';
 
     // Initialize Page
     async function init() {
         await updateNavbar();
         await fetchVendors();
+        setupLiveSearch();
     }
 
-    // UPGRADED NAV BAR LOGIC
+    // Role-Based Navbar
     async function updateNavbar() {
         const { data: { user } } = await supabaseClient.auth.getUser();
         if (user) {
@@ -129,22 +140,17 @@
             const loginLink = document.getElementById('navLogin');
             
             if(loginLink) {
-                // Keep base classes
                 loginLink.className = "px-4 py-2 rounded-lg font-bold text-sm transition-all";
-                
                 if (role === 'admin') {
-                    loginLink.href = "admin.html";
-                    loginLink.innerText = "Admin Panel";
-                    loginLink.classList.add("bg-[#003974]", "text-white"); // Admin Blue
+                    loginLink.href = "admin.html"; loginLink.innerText = "Admin Panel"; loginLink.classList.add("bg-[#003974]", "text-white");
                 } else {
-                    loginLink.href = "dashboard.html";
-                    loginLink.innerText = "My Dashboard";
-                    loginLink.classList.add("bg-secondary-container", "text-on-secondary-container"); // Tourist Orange
+                    loginLink.href = "dashboard.html"; loginLink.innerText = "My Dashboard"; loginLink.classList.add("bg-secondary-container", "text-on-secondary-container");
                 }
             }
         }
     }
 
+    // Fetch from Supabase
     async function fetchVendors() {
         const { data, error } = await supabaseClient.from('vendors').select('*').order('created_at', { ascending: false });
         
@@ -152,66 +158,104 @@
             document.getElementById('vendorGrid').innerHTML = `<p class='col-span-full text-center text-red-500 font-bold p-8 bg-red-50 rounded-xl'>Database Error: ${error.message}</p>`;
             return;
         }
-
-        if (data && data.length === 0) {
-            document.getElementById('vendorGrid').innerHTML = `
-                <div class='col-span-full text-center p-8 bg-orange-50 rounded-xl border border-orange-200'>
-                    <h3 class='text-orange-600 font-bold text-xl mb-2'>Data is Hidden by Supabase</h3>
-                    <p class='text-orange-800 mb-4'>Your code is working, but Supabase Security (RLS) is blocking the public from seeing the vendors.</p>
-                    <p class='text-sm text-orange-700 font-bold'>To fix this: Go to Supabase -> Table Editor -> 'vendors' -> Edit Table -> Turn OFF 'Enable Row Level Security (RLS)' -> Save.</p>
-                </div>`;
-            return;
-        }
-
-        allVendors = data;
-        renderVendors(data);
+        
+        allVendors = data || [];
+        applyAllFilters(); // Render initial data
     }
 
-    function renderVendors(list) {
-        const grid = document.getElementById('vendorGrid');
-        if (list.length === 0) {
-            grid.innerHTML = "<p class='col-span-full text-center py-20 text-gray-400 italic'>No listings found in this category.</p>";
-            return;
-        }
-
-        grid.innerHTML = list.map(v => `
-            <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col">
-                <div class="relative h-48 overflow-hidden shrink-0">
-                    <img src="${v.image_url || 'https://via.placeholder.com/400x300?text=No+Image'}" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary">
-                        ${v.category}
-                    </div>
-                </div>
-                <div class="p-6 flex flex-col justify-between flex-grow">
-                    <div>
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-headline font-bold text-lg text-primary">${v.name}</h3>
-                            <span class="text-secondary font-bold text-sm">${v.price_range}</span>
-                        </div>
-                        <p class="text-xs text-on-surface-variant line-clamp-2 mb-4 h-8">${v.description || 'No description provided.'}</p>
-                    </div>
-                    
-                    <div class="flex items-center justify-between pt-4 border-t border-gray-50 mt-auto">
-                        <div class="flex items-center gap-1 text-primary">
-                            <span class="material-symbols-outlined text-sm">call</span>
-                            <span class="text-[10px] font-bold tracking-tight">${v.contact}</span>
-                        </div>
-                        <a href="booking.html?vendor=${encodeURIComponent(v.name)}&category=${encodeURIComponent(v.category)}" class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition-transform">
-                            Book Now
-                        </a>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+    // --- SMART SEARCH LOGIC START ---
+    function setupLiveSearch() {
+        // Listen for typing in the search bar
+        document.getElementById('searchInput').addEventListener('input', applyAllFilters);
+        // Listen for dropdown changes
+        document.getElementById('priceFilter').addEventListener('change', applyAllFilters);
     }
 
-    function filterVendors(category, btnElement) {
+    function setCategory(category, btnElement) {
+        // Update button styles
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active-filter'));
         btnElement.classList.add('active-filter');
+        
+        // Save state and re-filter
+        currentCategory = category;
+        applyAllFilters();
+    }
 
-        if (category === 'all') renderVendors(allVendors);
-        else renderVendors(allVendors.filter(v => v.category === category));
+    function applyAllFilters() {
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        const priceSelect = document.getElementById('priceFilter').value;
+
+        // Run the filter algorithm
+        const filteredData = allVendors.filter(v => {
+            // 1. Check Category
+            const matchesCategory = (currentCategory === 'all') || (v.category === currentCategory);
+            
+            // 2. Check Price
+            const matchesPrice = (priceSelect === 'all') || (v.price_range === priceSelect);
+            
+            // 3. Check Live Search (Checks name AND description)
+            const safeName = v.name ? v.name.toLowerCase() : '';
+            const safeDesc = v.description ? v.description.toLowerCase() : '';
+            const matchesSearch = safeName.includes(searchText) || safeDesc.includes(searchText);
+
+            // Must pass all 3 tests to show up!
+            return matchesCategory && matchesPrice && matchesSearch;
+        });
+
+        renderVendors(filteredData);
+    }
+    // --- SMART SEARCH LOGIC END ---
+
+    // Render HTML
+    function renderVendors(list) {
+        const grid = document.getElementById('vendorGrid');
+        
+        // Fade out slightly for smooth transition feel
+        grid.style.opacity = 0.5;
+
+        setTimeout(() => {
+            if (list.length === 0) {
+                grid.innerHTML = `
+                <div class="col-span-full py-20 text-center">
+                    <span class="material-symbols-outlined text-6xl text-gray-300 mb-4 block">search_off</span>
+                    <h3 class="text-xl font-bold text-primary">No results found</h3>
+                    <p class="text-gray-500">Try adjusting your search or filters.</p>
+                </div>`;
+            } else {
+                grid.innerHTML = list.map(v => `
+                    <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col">
+                        <div class="relative h-48 overflow-hidden shrink-0 bg-gray-100">
+                            <img src="${v.image_url || 'https://via.placeholder.com/400x300?text=No+Image'}" 
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary shadow-sm">
+                                ${v.category}
+                            </div>
+                        </div>
+                        <div class="p-6 flex flex-col justify-between flex-grow">
+                            <div>
+                                <div class="flex justify-between items-start mb-2 gap-2">
+                                    <h3 class="font-headline font-bold text-lg text-primary leading-tight">${v.name}</h3>
+                                    <span class="text-secondary font-bold text-sm bg-orange-50 px-2 py-1 rounded shrink-0">${v.price_range}</span>
+                                </div>
+                                <p class="text-xs text-on-surface-variant line-clamp-2 mb-4 h-8">${v.description || 'No description provided.'}</p>
+                            </div>
+                            
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-50 mt-auto">
+                                <div class="flex items-center gap-1 text-primary">
+                                    <span class="material-symbols-outlined text-sm">call</span>
+                                    <span class="text-[10px] font-bold tracking-tight">${v.contact || 'N/A'}</span>
+                                </div>
+                                <a href="booking.html?vendor=${encodeURIComponent(v.name)}&category=${encodeURIComponent(v.category)}" class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition-transform shadow-sm">
+                                    Book Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            // Fade back in
+            grid.style.opacity = 1;
+        }, 150);
     }
 
     init();
