@@ -3,144 +3,179 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>My Dashboard | Kanyakumari Tourism</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <title>My Dashboard | Kanyakumari</title>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
       tailwind.config = { theme: { extend: { colors: { "primary": "#003974", "secondary-container": "#fd8b00", "surface": "#f8f9fa", "on-surface-variant": "#424751" }, fontFamily: { "headline": ["Noto Serif"], "body": ["Manrope"] } } } }
     </script>
-    <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        #dashboardContent { display: none; } 
-    </style>
+    <style>.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle;}</style>
 </head>
-<body class="bg-surface font-body text-[#191c1d]">
+<body class="bg-surface font-body text-[#191c1d] overflow-x-hidden min-h-screen flex flex-col hidden" id="pageBody">
 
-    <div id="loadingScreen" class="h-screen w-full flex flex-col items-center justify-center">
-        <span class="material-symbols-outlined text-primary text-4xl animate-spin mb-4">refresh</span>
-        <p class="text-on-surface-variant font-bold tracking-widest uppercase text-sm">Verifying Access...</p>
+<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md shadow-sm border-b border-gray-100">
+    <div class="flex justify-between items-center px-6 md:px-12 py-5 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="font-headline text-2xl font-bold text-primary">Kanyakumari</a>
+        <div class="flex items-center gap-6">
+            <a href="index.html" class="font-bold text-sm text-on-surface-variant hover:text-primary transition-colors">Home</a>
+            <button onclick="handleLogout()" class="text-sm font-bold text-red-500 hover:text-red-700 transition-colors">Log Out</button>
+        </div>
+    </div>
+</nav>
+
+<main class="pt-32 pb-24 px-6 md:px-12 max-w-screen-xl mx-auto flex-grow w-full">
+    
+    <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-200 pb-8">
+        <div>
+            <h1 class="text-4xl md:text-5xl text-primary font-bold mb-2 font-headline">My Itinerary</h1>
+            <p class="text-on-surface-variant text-lg" id="userGreeting">Loading your travel details...</p>
+        </div>
+        <a href="attractions.html" class="bg-primary text-white px-6 py-3 rounded-lg font-bold text-sm shadow-md hover:bg-primary/90 transition-colors inline-block text-center">
+            + Add New Booking
+        </a>
     </div>
 
-    <div id="dashboardContent" class="flex h-screen overflow-hidden">
+    <div id="bookingsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="col-span-full py-20 text-center">
+            <span class="material-symbols-outlined text-4xl text-primary animate-spin mb-4">refresh</span>
+            <p class="text-on-surface-variant font-bold">Fetching your reservations...</p>
+        </div>
+    </div>
+
+</main>
+
+<footer class="bg-gray-100 w-full py-12 px-12 mt-auto">
+    <div class="max-w-screen-2xl mx-auto text-center">
+        <p class="text-[10px] text-on-surface-variant/50 uppercase tracking-widest">© 2026 The Horizon Observer | Kanyakumari Tourism Portal</p>
+    </div>
+</footer>
+
+<script>
+    const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    let currentUser = null;
+
+    // 1. Verify Login on Page Load
+    async function checkUser() {
+        const { data: { user } } = await db.auth.getUser();
         
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex">
-            <div class="p-6 border-b border-gray-100">
-                <a href="index.html" class="font-headline text-2xl font-bold text-primary">Kanyakumari</a>
-            </div>
-            <nav class="p-4 space-y-2 flex-grow">
-                <a href="#" class="flex items-center gap-3 p-3 bg-primary/5 text-primary rounded-lg font-bold">
-                    <span class="material-symbols-outlined">confirmation_number</span> My Tours
-                </a>
-            </nav>
-            <div class="p-4 border-t border-gray-100">
-                <button id="logoutBtn" class="flex items-center gap-3 p-3 w-full text-red-600 hover:bg-red-50 rounded-lg font-bold text-left">
-                    <span class="material-symbols-outlined">logout</span> Log Out
-                </button>
-            </div>
-        </aside>
+        if (!user) {
+            // Kick them out if they aren't logged in
+            window.location.href = "login.html";
+        } else {
+            currentUser = user;
+            document.getElementById('pageBody').classList.remove('hidden');
+            document.getElementById('userGreeting').innerText = `Welcome back, ${user.email}`;
+            fetchMyBookings();
+        }
+    }
 
-        <main class="flex-grow p-8 md:p-12 overflow-y-auto">
-            <header class="flex justify-between items-center mb-12">
-                <div>
-                    <h1 class="text-4xl font-headline font-bold text-primary mb-2">Welcome Back.</h1>
-                    <p class="text-on-surface-variant">Logged in as: <span id="userEmailDisplay" class="font-bold text-primary"></span></p>
-                </div>
-                <a href="booking.html" class="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold shadow-sm hover:opacity-90">
-                    + New Booking
-                </a>
-            </header>
+    // 2. Fetch EXACTLY this user's bookings
+    async function fetchMyBookings() {
+        const grid = document.getElementById('bookingsGrid');
+        
+        // Notice the .eq('user_email', currentUser.email) - This is the magic filter!
+        const { data, error } = await db
+            .from('bookings')
+            .select('*')
+            .eq('user_email', currentUser.email)
+            .order('tour_date', { ascending: true });
 
-            <section>
-                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-secondary-container">local_activity</span> Your Bookings
-                </h2>
-                
-                <div id="bookingsContainer" class="space-y-4">
-                    <p class="text-gray-500 italic">Fetching your tickets...</p>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <script>
-        const MY_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
-        const MY_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
-        const db = window.supabase.createClient(MY_URL, MY_KEY);
-
-        async function initDashboard() {
-            // 1. Verify User
-            const { data: { user }, error } = await db.auth.getUser();
-
-            if (!user || error) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Show UI
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('dashboardContent').style.display = 'flex';
-            document.getElementById('userEmailDisplay').innerText = user.email;
-
-            // 2. Fetch their specific bookings
-            const { data: bookings, error: fetchError } = await db
-                .from('bookings')
-                .select('*')
-                .eq('user_email', user.email) // ONLY get rows matching their email
-                .order('created_at', { ascending: false });
-
-            const container = document.getElementById('bookingsContainer');
-
-            if (fetchError) {
-                container.innerHTML = `<p class="text-red-500">Error loading bookings.</p>`;
-                return;
-            }
-
-            // 3. Render the HTML dynamically
-            if (bookings.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white p-8 rounded-xl border border-dashed border-gray-300 text-center">
-                        <p class="text-gray-500">You don't have any upcoming tours yet.</p>
-                        <a href="booking.html" class="text-primary font-bold hover:underline mt-2 inline-block">Explore Tours</a>
-                    </div>`;
-            } else {
-                container.innerHTML = ''; // Clear the "fetching" text
-                
-                // Loop through every booking and create a ticket card
-                bookings.forEach(booking => {
-                    const ticketHTML = `
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
-                            <div class="flex items-center gap-6">
-                                <div class="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined text-primary text-3xl">wb_twilight</span>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-lg text-primary">Sunrise Serenity Tour</h3>
-                                    <p class="text-sm text-on-surface-variant">
-                                        Date: <b>${booking.tour_date}</b> • Slot: <b>${booking.time_slot}</b> • Guests: <b>${booking.guests}</b>
-                                    </p>
-                                    <p class="text-xs text-gray-400 mt-1">Booking ID: ${booking.id}</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3 w-full md:w-auto">
-                                <span class="px-4 py-2 bg-green-100 text-green-800 rounded-lg font-bold text-sm flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">check_circle</span> Confirmed
-                                </span>
-                            </div>
-                        </div>
-                    `;
-                    container.innerHTML += ticketHTML;
-                });
-            }
+        if (error) {
+            grid.innerHTML = `<p class="col-span-full text-center text-red-500 font-bold p-8 bg-red-50 rounded-xl">Error: ${error.message}</p>`;
+            return;
         }
 
-        initDashboard();
+        if (data.length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300">
+                    <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">luggage</span>
+                    <h3 class="text-xl font-bold text-primary mb-2">Your itinerary is empty</h3>
+                    <p class="text-on-surface-variant mb-6">Looks like you haven't booked any experiences yet.</p>
+                    <a href="markets.html" class="text-secondary-container font-bold hover:underline">Explore Local Partners &rarr;</a>
+                </div>
+            `;
+            return;
+        }
 
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            await db.auth.signOut();
-            window.location.href = 'login.html'; 
-        });
-    </script>
+        // 3. Render the Booking Cards
+        grid.innerHTML = data.map(b => {
+            const isVenuePay = b.total_price === 0 || !b.total_price;
+            
+            return `
+            <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden group">
+                <div class="absolute top-0 left-0 w-2 h-full ${isVenuePay ? 'bg-secondary-container' : 'bg-primary'}"></div>
+                
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span class="text-[10px] font-bold tracking-widest uppercase text-gray-400 block mb-1">Reservation</span>
+                        <h3 class="font-headline font-bold text-xl text-primary">${b.vendor_name || 'Sunrise Tour'}</h3>
+                    </div>
+                    <div class="bg-gray-50 text-gray-600 px-3 py-1 rounded-lg text-xs font-bold text-center">
+                        <span class="block text-[10px] uppercase tracking-wider text-gray-400">Date</span>
+                        ${b.tour_date || 'TBD'}
+                    </div>
+                </div>
+
+                <div class="space-y-3 mb-8">
+                    <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-gray-400">schedule</span>
+                        ${b.time_slot !== 'N/A' ? b.time_slot : 'Flexible Timing'}
+                    </div>
+                    <div class="flex items-center gap-3 text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-gray-400">group</span>
+                        ${b.guests} ${b.guests > 1 ? 'Guests' : 'Guest'}
+                    </div>
+                    <div class="flex items-center gap-3 text-sm font-bold ${isVenuePay ? 'text-secondary-container' : 'text-green-600'}">
+                        <span class="material-symbols-outlined ${isVenuePay ? 'text-secondary-container' : 'text-green-600'}">payments</span>
+                        ${isVenuePay ? 'Pay at Venue' : '₹' + b.total_price.toLocaleString() + ' Paid'}
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-100 flex justify-end">
+                    <button onclick="cancelBooking('${b.id}')" class="text-xs font-bold text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-lg transition-colors">
+                        Cancel Booking
+                    </button>
+                </div>
+            </div>
+            `;
+        }).join('');
+    }
+
+    // 4. Securely Delete a Booking
+    async function cancelBooking(bookingId) {
+        if (!confirm("Are you sure you want to cancel this booking? This cannot be undone.")) {
+            return;
+        }
+
+        const { error } = await db
+            .from('bookings')
+            .delete()
+            .eq('id', bookingId); // Deletes the row matching this exact ID
+
+        if (error) {
+            alert("Could not cancel booking: " + error.message);
+        } else {
+            // Re-fetch the bookings to instantly update the screen
+            fetchMyBookings(); 
+        }
+    }
+
+    // 5. Logout Function
+    async function handleLogout() {
+        await db.auth.signOut();
+        localStorage.removeItem('portal_role'); // Clear admin status just in case
+        window.location.href = "index.html";
+    }
+
+    // Start the process
+    checkUser();
+</script>
 </body>
 </html>
