@@ -8,8 +8,6 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
@@ -17,15 +15,8 @@
     </script>
     <style>
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle;}
-        
-        /* SortableJS specific styling */
-        .draggable-item { cursor: grab; }
-        .draggable-item:active { cursor: grabbing; }
-        .drop-zone { min-height: 150px; transition: all 0.3s ease; }
-        
-        /* The style of the card while you are holding it */
-        .sortable-ghost { opacity: 0.4; background-color: #f0f7ff; border: 2px dashed #003974; }
-        .sortable-drag { box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); cursor: grabbing !important; }
+        /* Smooth transitions for moving cards */
+        .itinerary-card { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="bg-surface font-body text-[#191c1d] overflow-x-hidden min-h-screen flex flex-col">
@@ -49,7 +40,7 @@
     
     <div class="mb-12 text-center max-w-2xl mx-auto">
         <h1 class="text-4xl md:text-5xl text-primary font-bold mb-4 font-headline">Interactive Trip Planner</h1>
-        <p class="text-on-surface-variant text-lg">Drag and drop your favorite locations from the bank into your daily itinerary. Design your perfect coastal escape.</p>
+        <p class="text-on-surface-variant text-lg">Click the buttons to assign locations from the bank into your daily itinerary. Design your perfect coastal escape.</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -59,57 +50,71 @@
                 <span class="material-symbols-outlined text-secondary-container">map</span>
                 Available Attractions
             </h2>
-            <p class="text-xs text-gray-500 mb-6">Click and drag these cards over to your schedule.</p>
+            <p class="text-xs text-gray-500 mb-6">Click '+ Day 1' or '+ Day 2' to add to your schedule.</p>
             
-            <div id="source-zone" class="drop-zone space-y-4 rounded-xl border-2 border-dashed border-gray-200 p-4 bg-gray-50/50">
+            <div id="source-zone" class="space-y-4 min-h-[150px]">
                 
-                <div class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
-                    <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 text-primary">
-                        <span class="material-symbols-outlined">sailing</span>
+                <div id="card-rock" class="itinerary-card bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3">
+                    <div class="flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 text-primary">
+                            <span class="material-symbols-outlined">sailing</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-primary text-sm">Vivekananda Rock</h3>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">2-3 Hours • Ferry</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-primary text-sm">Vivekananda Rock</h3>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">2-3 Hours • Ferry</p>
-                    </div>
-                </div>
-
-                <div class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
-                    <div class="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center shrink-0 text-secondary-container">
-                        <span class="material-symbols-outlined">monument</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-primary text-sm">Thiruvalluvar Statue</h3>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">1 Hour • Landmark</p>
+                    <div class="action-buttons flex gap-2 border-t border-gray-50 pt-2 mt-1">
+                        <button onclick="moveCard('card-rock', 'day1-zone')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded-lg text-xs font-bold transition-colors">+ Day 1</button>
+                        <button onclick="moveCard('card-rock', 'day2-zone')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded-lg text-xs font-bold transition-colors">+ Day 2</button>
                     </div>
                 </div>
 
-                <div class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
-                    <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center shrink-0 text-red-600">
-                        <span class="material-symbols-outlined">temple_hindu</span>
+                <div id="card-statue" class="itinerary-card bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3">
+                    <div class="flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center shrink-0 text-secondary-container">
+                            <span class="material-symbols-outlined">monument</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-primary text-sm">Thiruvalluvar Statue</h3>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">1 Hour • Landmark</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-primary text-sm">Bhagavathy Amman</h3>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">1.5 Hours • Heritage</p>
-                    </div>
-                </div>
-
-                <div class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
-                    <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center shrink-0 text-green-700">
-                        <span class="material-symbols-outlined">castle</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-primary text-sm">Padmanabhapuram Palace</h3>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">3 Hours • Historic</p>
+                    <div class="action-buttons flex gap-2 border-t border-gray-50 pt-2 mt-1">
+                        <button onclick="moveCard('card-statue', 'day1-zone')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded-lg text-xs font-bold transition-colors">+ Day 1</button>
+                        <button onclick="moveCard('card-statue', 'day2-zone')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded-lg text-xs font-bold transition-colors">+ Day 2</button>
                     </div>
                 </div>
 
-                <div class="draggable-item bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
-                    <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center shrink-0 text-purple-600">
-                        <span class="material-symbols-outlined">wb_twilight</span>
+                <div id="card-temple" class="itinerary-card bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3">
+                    <div class="flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center shrink-0 text-red-600">
+                            <span class="material-symbols-outlined">temple_hindu</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-primary text-sm">Bhagavathy Amman</h3>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">1.5 Hours • Heritage</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-primary text-sm">Sunset Point View</h3>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Evening • Scenic</p>
+                    <div class="action-buttons flex gap-2 border-t border-gray-50 pt-2 mt-1">
+                        <button onclick="moveCard('card-temple', 'day1-zone')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded-lg text-xs font-bold transition-colors">+ Day 1</button>
+                        <button onclick="moveCard('card-temple', 'day2-zone')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded-lg text-xs font-bold transition-colors">+ Day 2</button>
+                    </div>
+                </div>
+
+                <div id="card-palace" class="itinerary-card bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3">
+                    <div class="flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center shrink-0 text-green-700">
+                            <span class="material-symbols-outlined">castle</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-primary text-sm">Padmanabhapuram Palace</h3>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">3 Hours • Historic</p>
+                        </div>
+                    </div>
+                    <div class="action-buttons flex gap-2 border-t border-gray-50 pt-2 mt-1">
+                        <button onclick="moveCard('card-palace', 'day1-zone')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded-lg text-xs font-bold transition-colors">+ Day 1</button>
+                        <button onclick="moveCard('card-palace', 'day2-zone')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded-lg text-xs font-bold transition-colors">+ Day 2</button>
                     </div>
                 </div>
 
@@ -121,20 +126,20 @@
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold text-primary font-headline">Day 1 Schedule</h2>
-                    <button onclick="clearZone('day1-zone')" class="text-xs text-red-500 hover:text-red-700 font-bold">Clear Day</button>
+                    <button onclick="clearZone('day1-zone')" class="text-xs text-red-500 hover:text-red-700 font-bold px-3 py-1 bg-red-50 rounded-lg">Clear Day</button>
                 </div>
-                <div id="day1-zone" class="drop-zone space-y-4 rounded-xl border-2 border-dashed border-gray-300 p-6 bg-gray-50 relative">
-                    <p class="text-center text-gray-400 font-bold empty-msg pointer-events-none my-8">Drag morning & afternoon activities here.</p>
+                <div id="day1-zone" class="space-y-4 rounded-xl border-2 border-dashed border-gray-300 p-6 bg-gray-50 relative min-h-[150px]">
+                    <p class="text-center text-gray-400 font-bold empty-msg pointer-events-none mt-4">No activities scheduled yet.</p>
                 </div>
             </div>
 
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold text-primary font-headline">Day 2 Schedule</h2>
-                    <button onclick="clearZone('day2-zone')" class="text-xs text-red-500 hover:text-red-700 font-bold">Clear Day</button>
+                    <button onclick="clearZone('day2-zone')" class="text-xs text-red-500 hover:text-red-700 font-bold px-3 py-1 bg-red-50 rounded-lg">Clear Day</button>
                 </div>
-                <div id="day2-zone" class="drop-zone space-y-4 rounded-xl border-2 border-dashed border-gray-300 p-6 bg-gray-50 relative">
-                    <p class="text-center text-gray-400 font-bold empty-msg pointer-events-none my-8">Drag remaining activities here.</p>
+                <div id="day2-zone" class="space-y-4 rounded-xl border-2 border-dashed border-gray-300 p-6 bg-gray-50 relative min-h-[150px]">
+                    <p class="text-center text-gray-400 font-bold empty-msg pointer-events-none mt-4">No activities scheduled yet.</p>
                 </div>
             </div>
 
@@ -149,52 +154,58 @@
 </footer>
 
 <script>
-    // Configuration that allows all three lists to share items
-    const sortableConfig = {
-        group: 'shared-itinerary', // This tells Sortable they are connected
-        animation: 150, // Smooth sliding animation in milliseconds
-        ghostClass: 'sortable-ghost', // The CSS class applied to the placeholder
-        dragClass: 'sortable-drag', // The CSS class applied to the floating card
-        onEnd: function (evt) {
-            // Runs every time you drop an item
-            checkEmptyStates();
+    function moveCard(cardId, targetZoneId) {
+        const card = document.getElementById(cardId);
+        const targetZone = document.getElementById(targetZoneId);
+        
+        if (!card || !targetZone) return;
+
+        // 1. Change the buttons based on where the card is going
+        const btnContainer = card.querySelector('.action-buttons');
+        
+        if (targetZoneId === 'source-zone') {
+            // If moving back to source, show Day 1 / Day 2 buttons
+            btnContainer.innerHTML = `
+                <button onclick="moveCard('${cardId}', 'day1-zone')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded-lg text-xs font-bold transition-colors">+ Day 1</button>
+                <button onclick="moveCard('${cardId}', 'day2-zone')" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded-lg text-xs font-bold transition-colors">+ Day 2</button>
+            `;
+        } else {
+            // If moving to an itinerary, show a Remove button
+            btnContainer.innerHTML = `
+                <button onclick="moveCard('${cardId}', 'source-zone')" class="w-full bg-red-50 text-red-500 hover:bg-red-100 py-2 rounded-lg text-xs font-bold transition-colors">- Remove from Schedule</button>
+            `;
         }
-    };
 
-    // Initialize the three zones
-    new Sortable(document.getElementById('source-zone'), sortableConfig);
-    new Sortable(document.getElementById('day1-zone'), sortableConfig);
-    new Sortable(document.getElementById('day2-zone'), sortableConfig);
+        // 2. Physically move the HTML element to the new zone
+        targetZone.appendChild(card);
+        
+        // 3. Update the "Empty" messages
+        checkEmptyStates();
+    }
 
-    // Helper: Show/Hide the "Drag items here" placeholder text
     function checkEmptyStates() {
         ['source-zone', 'day1-zone', 'day2-zone'].forEach(zoneId => {
             const zone = document.getElementById(zoneId);
-            if (!zone) return;
-            
             const msg = zone.querySelector('.empty-msg');
-            const itemsCount = zone.querySelectorAll('.draggable-item').length;
+            const itemsCount = zone.querySelectorAll('.itinerary-card').length;
             
             if(msg) {
-                // If there are cards in the zone, hide the empty text.
                 msg.style.display = itemsCount > 0 ? 'none' : 'block';
             }
         });
     }
 
-    // Helper: Move items from a Day back to the Source bucket using a button
     function clearZone(zoneId) {
         const zone = document.getElementById(zoneId);
-        const source = document.getElementById('source-zone');
-        const items = zone.querySelectorAll('.draggable-item');
+        const cards = zone.querySelectorAll('.itinerary-card');
         
-        items.forEach(item => {
-            source.appendChild(item);
+        // Send every card in this zone back to the source
+        cards.forEach(card => {
+            moveCard(card.id, 'source-zone');
         });
-        checkEmptyStates();
     }
 
-    // Run once on load to set up the empty messages
+    // Initialize messages on load
     checkEmptyStates();
 </script>
 
