@@ -8,9 +8,11 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="manifest" href="manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="manifest" href="manifest.json">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
     <script class="hidden" id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -21,7 +23,12 @@
               "on-surface": "#191c1d", "secondary-container": "#fd8b00", "on-secondary-container": "#603100",
               "surface-container-low": "#f3f4f5", "on-surface-variant": "#424751", "secondary": "#904d00"
             },
-            fontFamily: { "headline": ["Noto Serif", "serif"], "body": ["Manrope", "sans-serif"], "label": ["Manrope", "sans-serif"] }
+            fontFamily: { 
+                "headline": ["Noto Serif", "serif"], 
+                "body": ["Manrope", "sans-serif"], 
+                "label": ["Manrope", "sans-serif"],
+                "tamil": ["'Noto Sans Tamil'", "sans-serif"]
+            }
           },
         },
       }
@@ -37,24 +44,32 @@
         .typing-dot:nth-child(1) { animation-delay: -0.32s; }
         .typing-dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        
+        /* Language Transition Fade */
+        .lang-fade { transition: opacity 0.3s ease; }
     </style>
 </head>
-<body class="bg-surface font-body text-on-surface">
+<body class="bg-surface font-body text-on-surface lang-fade" id="mainBody">
 
 <nav class="fixed top-0 w-full z-40 bg-surface/70 backdrop-blur-md shadow-[0_20px_40px_rgba(0,27,61,0.06)]">
-    <div class="flex justify-between items-center px-12 py-6 max-w-screen-2xl mx-auto">
-        <a href="index.html" class="font-headline text-2xl font-bold tracking-tighter text-[#00509d]">Kanyakumari</a>
+    <div class="flex justify-between items-center px-6 md:px-12 py-6 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="font-headline text-2xl font-bold tracking-tighter text-[#00509d]" data-i18n="logo">Kanyakumari</a>
         
         <div class="hidden md:flex items-center space-x-8 font-headline text-lg tracking-tight">
-            <a class="text-[#00509d] font-bold border-b-2 border-[#00509d] pb-1" href="index.html">Home</a>
-            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="attractions.html">Attractions</a>
-            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="history.html">History</a>
-            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="markets.html">Markets</a>
+            <a class="text-[#00509d] font-bold border-b-2 border-[#00509d] pb-1" href="index.html" data-i18n="nav_home">Home</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="attractions.html" data-i18n="nav_attractions">Attractions</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="history.html" data-i18n="nav_history">History</a>
+            <a class="text-on-surface-variant hover:text-[#00509d] transition-all" href="markets.html" data-i18n="nav_markets">Markets</a>
         </div>
         
-        <div class="flex items-center gap-6">
-            <a href="login.html" class="hidden md:block font-label font-bold text-sm tracking-wide uppercase text-primary hover:opacity-70 transition-opacity">Log In</a>
-            <a href="booking.html" class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label font-bold text-sm tracking-wide uppercase transition-all hover:scale-105 shadow-md">Book Now</a>
+        <div class="flex items-center gap-4 md:gap-6">
+            <button onclick="toggleLanguage()" class="flex items-center gap-1 text-sm font-bold text-on-surface-variant hover:text-primary transition-colors px-2 py-1 bg-gray-200/50 rounded-lg">
+                <span class="material-symbols-outlined text-[16px]">language</span>
+                <span id="langDisplay">தமிழ்</span>
+            </button>
+
+            <a href="login.html" id="navLogin" class="hidden md:block font-label font-bold text-sm tracking-wide uppercase text-primary hover:opacity-70 transition-opacity" data-i18n="nav_login">Log In</a>
+            <a href="booking.html" class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label font-bold text-sm tracking-wide uppercase transition-all hover:scale-105 shadow-md" data-i18n="nav_book">Book Now</a>
         </div>
     </div>
 </nav>
@@ -66,51 +81,52 @@
             <div class="absolute inset-0 bg-black/50 backdrop-brightness-75"></div>
             <div class="absolute inset-0 bg-gradient-to-b from-primary/40 via-transparent to-primary/60"></div>
         </div>
-        <div class="relative z-10 text-center px-6">
-            <span class="block font-label text-white/90 text-sm tracking-[0.3em] uppercase mb-4 drop-shadow-md">The Southernmost Tip of India</span>
-            <h1 class="font-headline text-6xl md:text-8xl text-white font-bold tracking-tighter mb-8 max-w-4xl mx-auto leading-tight drop-shadow-lg">Where Three Seas Meet</h1>
+        <div class="relative z-10 text-center px-6 mt-16">
+            <span class="block font-label text-white/90 text-sm tracking-[0.3em] uppercase mb-4 drop-shadow-md font-bold" data-i18n="hero_subtitle">The Southernmost Tip of India</span>
+            <h1 class="font-headline text-6xl md:text-8xl text-white font-bold tracking-tighter mb-8 max-w-4xl mx-auto leading-tight drop-shadow-lg" data-i18n="hero_title">Where Three Seas Meet</h1>
             <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
-                <a href="attractions.html" class="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-all">Explore Destinations</a>
-                <a href="booking.html" class="text-white border-b-2 border-white/50 hover:border-white py-2 px-4 transition-all font-semibold">Watch the Sunrise</a>
+                <a href="attractions.html" class="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-all" data-i18n="hero_btn_explore">Explore Destinations</a>
+                <a href="booking.html" class="text-white border-b-2 border-white/50 hover:border-white py-2 px-4 transition-all font-semibold" data-i18n="hero_btn_sunrise">Watch the Sunrise</a>
             </div>
         </div>
     </section>
 
-    <section class="px-12 max-w-screen-2xl mx-auto -mt-16 relative z-20 mb-16">
+    <section class="px-6 md:px-12 max-w-screen-2xl mx-auto -mt-16 relative z-20 mb-16">
         <div class="bg-[#003974] text-white rounded-2xl shadow-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 border border-white/10 backdrop-blur-md">
             
             <div class="flex items-center gap-4">
                 <span class="material-symbols-outlined text-5xl text-[#fd8b00]">partly_cloudy_day</span>
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-widest text-blue-200">Live Coastal Conditions</h3>
-                    <p class="text-2xl font-headline font-bold">Kanyakumari, TN</p>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-blue-200" data-i18n="dash_title">Live Coastal Conditions</h3>
+                    <p class="text-2xl font-headline font-bold" data-i18n="dash_location">Kanyakumari, TN</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-3 gap-8 text-center divide-x divide-white/20 w-full md:w-auto">
-                <div class="px-4">
-                    <p class="text-xs text-blue-200 font-bold uppercase tracking-wider mb-1">Temperature</p>
-                    <p class="text-3xl font-bold" id="liveTemp">--°C</p>
+                <div class="px-2 md:px-4">
+                    <p class="text-[10px] md:text-xs text-blue-200 font-bold uppercase tracking-wider mb-1" data-i18n="dash_temp">Temperature</p>
+                    <p class="text-xl md:text-3xl font-bold" id="liveTemp">--°C</p>
                 </div>
                 
-                <div class="px-4">
-                    <p class="text-xs text-blue-200 font-bold uppercase tracking-wider mb-1">Wind Speed</p>
-                    <p class="text-3xl font-bold" id="liveWind">-- km/h</p>
+                <div class="px-2 md:px-4">
+                    <p class="text-[10px] md:text-xs text-blue-200 font-bold uppercase tracking-wider mb-1" data-i18n="dash_wind">Wind Speed</p>
+                    <p class="text-xl md:text-3xl font-bold" id="liveWind">-- km/h</p>
                 </div>
                 
-                <div class="px-4">
-                    <p class="text-xs text-[#fd8b00] font-bold uppercase tracking-wider mb-1">Next Sunrise</p>
-                    <p class="text-3xl font-bold text-[#fd8b00]" id="liveSunrise">--:--</p>
+                <div class="px-2 md:px-4">
+                    <p class="text-[10px] md:text-xs text-[#fd8b00] font-bold uppercase tracking-wider mb-1" data-i18n="dash_sunrise">Next Sunrise</p>
+                    <p class="text-xl md:text-3xl font-bold text-[#fd8b00]" id="liveSunrise">--:--</p>
                 </div>
             </div>
 
         </div>
     </section>
+
     <section class="py-32 px-12 bg-surface-container-low relative overflow-hidden">
         <div class="max-w-screen-xl mx-auto text-center relative z-10">
-            <h2 class="font-headline text-5xl md:text-6xl text-primary font-bold mb-8">Your Coastal Journey Awaits</h2>
-            <p class="text-on-surface-variant text-xl font-light mb-12 max-w-2xl mx-auto">Join our expert guides for a sunset tour of the memorial, local market explorations, and a journey into the history of the southern tip.</p>
-            <a href="booking.html" class="inline-block bg-secondary-container text-on-secondary-container px-10 py-5 rounded-lg font-bold text-xl hover:scale-105 transition-all shadow-lg">Book Sunrise Tour</a>
+            <h2 class="font-headline text-5xl md:text-6xl text-primary font-bold mb-8" data-i18n="journey_title">Your Coastal Journey Awaits</h2>
+            <p class="text-on-surface-variant text-xl font-light mb-12 max-w-2xl mx-auto" data-i18n="journey_desc">Join our expert guides for a sunset tour of the memorial, local market explorations, and a journey into the history of the southern tip.</p>
+            <a href="booking.html" class="inline-block bg-secondary-container text-on-secondary-container px-10 py-5 rounded-lg font-bold text-xl hover:scale-105 transition-all shadow-lg" data-i18n="journey_btn">Book Sunrise Tour</a>
         </div>
     </section>
 </main>
@@ -118,25 +134,138 @@
 <footer class="bg-surface-container-low w-full py-16 px-12 mt-20">
     <div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
         <div>
-            <h2 class="font-headline text-2xl text-[#00509d] font-bold mb-6">Kanyakumari</h2>
-            <p class="text-on-surface-variant/70 text-sm leading-loose max-w-xs">Curating the finest coastal experiences where the three seas meet. An editorial journey into the soul of the south.</p>
+            <h2 class="font-headline text-2xl text-[#00509d] font-bold mb-6" data-i18n="logo">Kanyakumari</h2>
+            <p class="text-on-surface-variant/70 text-sm leading-loose max-w-xs" data-i18n="footer_desc">Curating the finest coastal experiences where the three seas meet. An editorial journey into the soul of the south.</p>
         </div>
         <div class="flex flex-col gap-4">
-            <span class="font-label text-sm tracking-wide uppercase font-bold text-[#00509d]">Explore</span>
-            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4" href="attractions.html">Attractions</a>
-            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4" href="history.html">History</a>
-            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4" href="markets.html">Markets</a>
+            <span class="font-label text-sm tracking-wide uppercase font-bold text-[#00509d]" data-i18n="footer_explore">Explore</span>
+            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4" href="attractions.html" data-i18n="nav_attractions">Attractions</a>
+            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4" href="history.html" data-i18n="nav_history">History</a>
+            <a class="text-on-surface-variant/70 hover:underline decoration-2 underline-offset-4" href="markets.html" data-i18n="nav_markets">Markets</a>
         </div>
         <div class="flex flex-col gap-4">
-            <span class="font-label text-sm tracking-wide uppercase font-bold text-[#00509d]">Newsletter</span>
+            <span class="font-label text-sm tracking-wide uppercase font-bold text-[#00509d]" data-i18n="footer_newsletter">Newsletter</span>
             <div class="flex gap-2">
-                <input id="emailInput" class="bg-surface border-none rounded-lg px-4 py-3 text-sm flex-grow focus:ring-1 focus:ring-primary" placeholder="Email address" type="email"/>
-                <button id="subscribeBtn" class="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm">Join</button>
+                <input id="emailInput" class="bg-surface border-none rounded-lg px-4 py-3 text-sm flex-grow focus:ring-1 focus:ring-primary" placeholder="Email address" type="email" data-i18n="newsletter_placeholder"/>
+                <button id="subscribeBtn" class="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm" data-i18n="newsletter_btn">Join</button>
             </div>
-            <p class="text-[10px] text-on-surface-variant/50 mt-8">© 2026 The Horizon Observer.</p>
+            <p class="text-[10px] text-on-surface-variant/50 mt-8" data-i18n="footer_copyright">© 2026 The Horizon Observer.</p>
         </div>
     </div>
 </footer>
+
+<script>
+    const translations = {
+        en: {
+            logo: "Kanyakumari",
+            nav_home: "Home",
+            nav_attractions: "Attractions",
+            nav_history: "History",
+            nav_markets: "Markets",
+            nav_login: "Log In",
+            nav_book: "Book Now",
+            hero_subtitle: "The Southernmost Tip of India",
+            hero_title: "Where Three Seas Meet",
+            hero_btn_explore: "Explore Destinations",
+            hero_btn_sunrise: "Watch the Sunrise",
+            dash_title: "Live Coastal Conditions",
+            dash_location: "Kanyakumari, TN",
+            dash_temp: "Temperature",
+            dash_wind: "Wind Speed",
+            dash_sunrise: "Next Sunrise",
+            journey_title: "Your Coastal Journey Awaits",
+            journey_desc: "Join our expert guides for a sunset tour of the memorial, local market explorations, and a journey into the history of the southern tip.",
+            journey_btn: "Book Sunrise Tour",
+            footer_desc: "Curating the finest coastal experiences where the three seas meet. An editorial journey into the soul of the south.",
+            footer_explore: "Explore",
+            footer_newsletter: "Newsletter",
+            newsletter_placeholder: "Email address",
+            newsletter_btn: "Join",
+            footer_copyright: "© 2026 Team bit o logist.",
+            chat_title: "Kanyakumari AI Guide",
+            chat_sub: "Powered by Gemini",
+            chat_welcome: "Vanakkam! 🙏 I am your digital Kanyakumari guide. Ask me about the best times to visit, ticket prices, or local seafood!",
+            chat_placeholder: "Ask a question..."
+        },
+        ta: {
+            logo: "கன்னியாகுமரி",
+            nav_home: "முகப்பு",
+            nav_attractions: "இடங்கள்",
+            nav_history: "வரலாறு",
+            nav_markets: "சந்தைகள்",
+            nav_login: "உள்நுழை",
+            nav_book: "முன்பதிவு செய்",
+            hero_subtitle: "இந்தியாவின் தென்கோடி முனை",
+            hero_title: "மூன்று கடல்கள் சங்கமிக்கும் இடம்",
+            hero_btn_explore: "இடங்களை ஆராயுங்கள்",
+            hero_btn_sunrise: "சூரியோதயத்தை காணுங்கள்",
+            dash_title: "தற்போதைய வானிலை",
+            dash_location: "கன்னியாகுமரி, TN",
+            dash_temp: "வெப்பநிலை",
+            dash_wind: "காற்றின் வேகம்",
+            dash_sunrise: "சூரியோதயம்",
+            journey_title: "உங்கள் கடலோர பயணம் காத்திருக்கிறது",
+            journey_desc: "நினைவுச்சின்னத்தின் சூரிய அஸ்தமன சுற்றுப்பயணம், உள்ளூர் சந்தை ஆய்வுகள் மற்றும் தென்கோடி முனையின் வரலாற்றுப் பயணத்திற்கு எங்கள் நிபுணர் வழிகாட்டிகளுடன் சேருங்கள்.",
+            journey_btn: "முன்பதிவு செய்",
+            footer_desc: "மூன்று கடல்கள் சந்திக்கும் இடத்தில் சிறந்த கடலோர அனுபவங்களை உருவாக்குதல். தெற்கின் ஆன்மாவிற்கு ஒரு தலையங்கப் பயணம்.",
+            footer_explore: "ஆராயுங்கள்",
+            footer_newsletter: "செய்திமடல்",
+            newsletter_placeholder: "மின்னஞ்சல் முகவரி",
+            newsletter_btn: "சேரவும்",
+            footer_copyright: "© 2026 Team bit o logist.",
+            chat_title: "கன்னியாகுமரி AI வழிகாட்டி",
+            chat_sub: "Powered by Gemini",
+            chat_welcome: "வணக்கம்! 🙏 நான் உங்கள் டிஜிட்டல் வழிகாட்டி. சந்திக்க சிறந்த நேரங்கள், டிக்கெட் விலைகள் அல்லது உள்ளூர் உணவுகள் பற்றி என்னிடம் கேளுங்கள்!",
+            chat_placeholder: "ஒரு கேள்வி கேளுங்கள்..."
+        }
+    };
+
+    let currentLang = localStorage.getItem('portal_lang') || 'en';
+
+    function applyTranslations(lang) {
+        document.getElementById('mainBody').style.opacity = 0;
+        
+        setTimeout(() => {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    // Handle input placeholders vs standard text
+                    if (element.tagName === 'INPUT') {
+                        element.placeholder = translations[lang][key];
+                    } else {
+                        element.innerText = translations[lang][key];
+                    }
+                }
+            });
+
+            if (lang === 'ta') {
+                document.getElementById('mainBody').classList.add('font-tamil');
+                document.getElementById('mainBody').classList.remove('font-body');
+                document.getElementById('langDisplay').innerText = 'ENG';
+            } else {
+                document.getElementById('mainBody').classList.add('font-body');
+                document.getElementById('mainBody').classList.remove('font-tamil');
+                document.getElementById('langDisplay').innerText = 'தமிழ்';
+            }
+            
+            // Re-run the Auth script so the Dashboard/Admin button gets translated!
+            if (typeof updateNavbar === "function") updateNavbar();
+
+            document.getElementById('mainBody').style.opacity = 1;
+        }, 150);
+    }
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'en' ? 'ta' : 'en';
+        localStorage.setItem('portal_lang', currentLang);
+        applyTranslations(currentLang);
+    }
+
+    // Run on load
+    window.addEventListener('DOMContentLoaded', () => {
+        applyTranslations(currentLang);
+    });
+</script>
 
 <script>
     document.getElementById('subscribeBtn').addEventListener('click', async () => {
@@ -170,14 +299,13 @@
     const SUPABASE_URL = 'https://kpsmvybneziqggcizspy.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwc212eWJuZXppcWdnY2l6c3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDUxMDcsImV4cCI6MjA5MDg4MTEwN30.8IF2XSBHWH0YCdruqtcXVeft8HfqtPI5qdGo4mqkEU8';
     
-    if (window.supabase) {
-        const supabaseAuth = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        async function updateNavbar() {
+    // Made updateNavbar global so the translation script can call it
+    window.updateNavbar = async function() {
+        if (window.supabase) {
+            const supabaseAuth = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             const { data: { user } } = await supabaseAuth.auth.getUser();
             
             if (user) {
-                // 1. Check the user's role from local storage
                 const role = localStorage.getItem('portal_role');
                 const loginLinks = document.querySelectorAll('a[href="login.html"]');
                 
@@ -185,21 +313,21 @@
                     link.classList.remove("text-primary");
                     link.classList.add("px-4", "py-2", "rounded-lg");
 
-                    // 2. Route them based on their role!
                     if (role === 'admin') {
                         link.href = "admin.html";
-                        link.innerText = "Admin Panel";
-                        link.classList.add("bg-[#003974]", "text-white"); // Blue theme for Admin
+                        // Smart Translation Logic applied to dynamic buttons
+                        link.innerText = currentLang === 'en' ? "Admin Panel" : "நிர்வாக குழு";
+                        link.classList.add("bg-[#003974]", "text-white"); 
                     } else {
                         link.href = "dashboard.html";
-                        link.innerText = "My Dashboard";
-                        link.classList.add("bg-secondary-container", "text-on-secondary-container"); // Orange theme for Tourist
+                        link.innerText = currentLang === 'en' ? "My Dashboard" : "என் பக்கம்";
+                        link.classList.add("bg-secondary-container", "text-on-secondary-container"); 
                     }
                 });
             }
         }
-        updateNavbar();
     }
+    window.updateNavbar();
 </script>
 
 <button id="chatToggle" class="fixed bottom-6 right-6 z-50 bg-primary text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform">
@@ -211,8 +339,8 @@
         <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-secondary-container">auto_awesome</span>
             <div>
-                <h3 class="font-bold text-sm">Kanyakumari AI Guide</h3>
-                <p class="text-[10px] text-white/70">Powered by Gemini</p>
+                <h3 class="font-bold text-sm" data-i18n="chat_title">Kanyakumari AI Guide</h3>
+                <p class="text-[10px] text-white/70" data-i18n="chat_sub">Powered by Gemini</p>
             </div>
         </div>
         <button id="closeChat" class="text-white/70 hover:text-white transition-colors">
@@ -222,14 +350,14 @@
 
     <div id="chatMessages" class="p-4 h-[350px] overflow-y-auto flex flex-col gap-4 bg-gray-50/50">
         <div class="flex gap-2 w-full max-w-[85%]">
-            <div class="bg-gray-100 text-gray-800 p-3 rounded-2xl rounded-tl-sm text-sm shadow-sm">
+            <div class="bg-gray-100 text-gray-800 p-3 rounded-2xl rounded-tl-sm text-sm shadow-sm" data-i18n="chat_welcome">
                 Vanakkam! 🙏 I am your digital Kanyakumari guide. Ask me about the best times to visit, ticket prices, or local seafood!
             </div>
         </div>
     </div>
 
     <div class="p-3 bg-white border-t border-gray-100 flex gap-2">
-        <input id="chatInput" type="text" placeholder="Ask a question..." class="flex-grow bg-gray-50 border-none rounded-full px-4 text-sm focus:ring-2 focus:ring-primary/20 outline-none">
+        <input id="chatInput" type="text" placeholder="Ask a question..." data-i18n="chat_placeholder" class="flex-grow bg-gray-50 border-none rounded-full px-4 text-sm focus:ring-2 focus:ring-primary/20 outline-none">
         <button id="sendBtn" class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center shrink-0 hover:bg-primary/90 transition-colors">
             <span class="material-symbols-outlined text-xl">send</span>
         </button>
@@ -325,30 +453,22 @@
     const LAT = 8.0883;
     const LON = 77.5385;
     
-    // The API URL asking for current temp, wind, and daily sunrise times in IST
     const WEATHER_API = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,wind_speed_10m&daily=sunrise&timezone=Asia%2FKolkata`;
 
     async function fetchLiveWeather() {
         try {
-            // 1. Call the API
             const response = await fetch(WEATHER_API);
-            
-            // 2. Convert the response to a JSON object we can read
             const data = await response.json();
 
-            // 3. Extract exactly what we need
             const temp = data.current.temperature_2m;
             const wind = data.current.wind_speed_10m;
             
-            // Sunrise comes back looking like "2026-04-14T06:12". We just want the "06:12" part.
             const rawSunrise = data.daily.sunrise[0]; 
             const formattedSunrise = rawSunrise.split("T")[1]; 
 
-            // 4. Update the HTML on the screen
             document.getElementById('liveTemp').innerText = `${temp}°C`;
             document.getElementById('liveWind').innerText = `${wind} km/h`;
             
-            // Convert to 12-hour format for readability
             const [hours, minutes] = formattedSunrise.split(":");
             const ampm = hours >= 12 ? 'PM' : 'AM';
             const displayHours = hours % 12 || 12;
@@ -362,9 +482,9 @@
         }
     }
 
-    // Run the function as soon as the page loads!
     fetchLiveWeather();
 </script>
+
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
