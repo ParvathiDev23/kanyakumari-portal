@@ -146,9 +146,13 @@
 <script>
     // 1. When you start dragging an item
     function drag(event) {
-        // We pack the ID of the dragged item into a "dataTransfer" envelope
-        event.dataTransfer.setData("text", event.target.id);
-        event.target.style.opacity = "0.5"; // Visual feedback
+        // FIXED: Use 'text/plain' and 'currentTarget' so it always grabs the whole card, not just the text inside it!
+        event.dataTransfer.setData("text/plain", event.currentTarget.id);
+        
+        // FIXED: A tiny delay prevents Chrome/Safari from making the dragged "ghost" image invisible
+        setTimeout(() => {
+            event.target.style.opacity = "0.4";
+        }, 10);
     }
 
     // 2. Allow dropping (Browser blocks this by default!)
@@ -160,14 +164,16 @@
     function dragEnter(event) {
         event.preventDefault();
         // Only add the blue highlight if we are entering a valid drop zone container
-        if(event.target.classList.contains('drop-zone')) {
-            event.target.classList.add('drag-over');
+        let dropZone = event.target.closest('.drop-zone');
+        if(dropZone) {
+            dropZone.classList.add('drag-over');
         }
     }
 
     function dragLeave(event) {
-        if(event.target.classList.contains('drop-zone')) {
-            event.target.classList.remove('drag-over');
+        let dropZone = event.target.closest('.drop-zone');
+        if(dropZone) {
+            dropZone.classList.remove('drag-over');
         }
     }
 
@@ -175,42 +181,37 @@
     function drop(event) {
         event.preventDefault();
         
-        // Find the valid drop zone container (even if they dropped it on top of another card)
-        let dropZone = event.target;
-        while (!dropZone.classList.contains('drop-zone') && dropZone.tagName !== 'BODY') {
-            dropZone = dropZone.parentElement;
-        }
-
-        dropZone.classList.remove('drag-over'); // Remove blue highlight
-
-        // Get the ID we packed in the envelope
-        var data = event.dataTransfer.getData("text");
-        var draggedElement = document.getElementById(data);
+        // FIXED: Safely find the drop zone even if they drop the card on top of another card
+        let dropZone = event.target.closest('.drop-zone');
         
-        // Ensure opacity is back to normal
-        if(draggedElement) {
-            draggedElement.style.opacity = "1";
+        if (dropZone) {
+            dropZone.classList.remove('drag-over');
+
+            // Read the ID from the "text/plain" envelope
+            var data = event.dataTransfer.getData("text/plain");
+            var draggedElement = document.getElementById(data);
             
-            // Move the element!
-            dropZone.appendChild(draggedElement);
-            
-            // Cleanup: Hide the "Drag items here" text if the zone is no longer empty
-            checkEmptyStates();
+            if (draggedElement) {
+                draggedElement.style.opacity = "1";
+                dropZone.appendChild(draggedElement);
+                checkEmptyStates();
+            }
         }
     }
 
-    // Reset dragging element opacity if they drop it somewhere invalid
+    // Reset dragging element opacity if they drop it somewhere invalid (like outside the box)
     document.addEventListener('dragend', function(event) {
         event.target.style.opacity = "1";
+        document.querySelectorAll('.drop-zone').forEach(zone => zone.classList.remove('drag-over'));
     });
 
     // Helper: Show/Hide the "Drag items here" placeholder text
     function checkEmptyStates() {
         ['source-zone', 'day1-zone', 'day2-zone'].forEach(zoneId => {
             const zone = document.getElementById(zoneId);
-            const msg = zone.querySelector('.empty-msg');
+            if (!zone) return;
             
-            // Count how many draggable items are inside
+            const msg = zone.querySelector('.empty-msg');
             const itemsCount = zone.querySelectorAll('.draggable-item').length;
             
             if(msg) {
