@@ -58,7 +58,7 @@
         </div>
     </div>
 </nav>
-#done
+
 <main>
     <section class="relative h-screen w-full flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 z-0">
@@ -76,6 +76,36 @@
         </div>
     </section>
 
+    <section class="px-12 max-w-screen-2xl mx-auto -mt-16 relative z-20 mb-16">
+        <div class="bg-[#003974] text-white rounded-2xl shadow-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 border border-white/10 backdrop-blur-md">
+            
+            <div class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-5xl text-[#fd8b00]">partly_cloudy_day</span>
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-blue-200">Live Coastal Conditions</h3>
+                    <p class="text-2xl font-headline font-bold">Kanyakumari, TN</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-8 text-center divide-x divide-white/20 w-full md:w-auto">
+                <div class="px-4">
+                    <p class="text-xs text-blue-200 font-bold uppercase tracking-wider mb-1">Temperature</p>
+                    <p class="text-3xl font-bold" id="liveTemp">--°C</p>
+                </div>
+                
+                <div class="px-4">
+                    <p class="text-xs text-blue-200 font-bold uppercase tracking-wider mb-1">Wind Speed</p>
+                    <p class="text-3xl font-bold" id="liveWind">-- km/h</p>
+                </div>
+                
+                <div class="px-4">
+                    <p class="text-xs text-[#fd8b00] font-bold uppercase tracking-wider mb-1">Next Sunrise</p>
+                    <p class="text-3xl font-bold text-[#fd8b00]" id="liveSunrise">--:--</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
     <section class="py-32 px-12 bg-surface-container-low relative overflow-hidden">
         <div class="max-w-screen-xl mx-auto text-center relative z-10">
             <h2 class="font-headline text-5xl md:text-6xl text-primary font-bold mb-8">Your Coastal Journey Awaits</h2>
@@ -103,7 +133,7 @@
                 <input id="emailInput" class="bg-surface border-none rounded-lg px-4 py-3 text-sm flex-grow focus:ring-1 focus:ring-primary" placeholder="Email address" type="email"/>
                 <button id="subscribeBtn" class="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm">Join</button>
             </div>
-            <p class="text-[10px] text-on-surface-variant/50 mt-8">© 2024 The Horizon Observer.</p>
+            <p class="text-[10px] text-on-surface-variant/50 mt-8">© 2026 The Horizon Observer.</p>
         </div>
     </div>
 </footer>
@@ -192,8 +222,6 @@
 </div>
 
 <script>
-    // Notice: NO API KEY HERE! It is securely hidden in Vercel.
-
     const chatToggle = document.getElementById('chatToggle');
     const chatWindow = document.getElementById('chatWindow');
     const closeChat = document.getElementById('closeChat');
@@ -221,7 +249,6 @@
         try {
             const promptContext = "You are a friendly, enthusiastic local tour guide in Kanyakumari, India. Keep your answers short (2-3 sentences max) and helpful. The user asks: " + text;
             
-            // 🚀 We are now securely fetching from YOUR backend file, not Google directly
             const response = await fetch(`/api/ask`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -277,5 +304,52 @@
         return id;
     }
 </script>
+
+<script>
+    // The exact coordinates for Kanyakumari
+    const LAT = 8.0883;
+    const LON = 77.5385;
+    
+    // The API URL asking for current temp, wind, and daily sunrise times in IST
+    const WEATHER_API = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,wind_speed_10m&daily=sunrise&timezone=Asia%2FKolkata`;
+
+    async function fetchLiveWeather() {
+        try {
+            // 1. Call the API
+            const response = await fetch(WEATHER_API);
+            
+            // 2. Convert the response to a JSON object we can read
+            const data = await response.json();
+
+            // 3. Extract exactly what we need
+            const temp = data.current.temperature_2m;
+            const wind = data.current.wind_speed_10m;
+            
+            // Sunrise comes back looking like "2026-04-14T06:12". We just want the "06:12" part.
+            const rawSunrise = data.daily.sunrise[0]; 
+            const formattedSunrise = rawSunrise.split("T")[1]; 
+
+            // 4. Update the HTML on the screen
+            document.getElementById('liveTemp').innerText = `${temp}°C`;
+            document.getElementById('liveWind').innerText = `${wind} km/h`;
+            
+            // Convert to 12-hour format for readability
+            const [hours, minutes] = formattedSunrise.split(":");
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const displayHours = hours % 12 || 12;
+            document.getElementById('liveSunrise').innerText = `${displayHours}:${minutes} ${ampm}`;
+
+        } catch (error) {
+            console.error("Failed to fetch weather data:", error);
+            document.getElementById('liveTemp').innerText = "N/A";
+            document.getElementById('liveWind').innerText = "N/A";
+            document.getElementById('liveSunrise').innerText = "N/A";
+        }
+    }
+
+    // Run the function as soon as the page loads!
+    fetchLiveWeather();
+</script>
+
 </body>
 </html>
