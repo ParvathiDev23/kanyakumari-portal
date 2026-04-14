@@ -121,14 +121,26 @@
         await fetchVendors();
     }
 
+    // UPGRADED NAV BAR LOGIC
     async function updateNavbar() {
         const { data: { user } } = await supabaseClient.auth.getUser();
         if (user) {
+            const role = localStorage.getItem('portal_role');
             const loginLink = document.getElementById('navLogin');
+            
             if(loginLink) {
-                loginLink.href = "dashboard.html";
-                loginLink.innerText = "Dashboard";
-                loginLink.className = "bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg font-bold text-sm transition-all";
+                // Keep base classes
+                loginLink.className = "px-4 py-2 rounded-lg font-bold text-sm transition-all";
+                
+                if (role === 'admin') {
+                    loginLink.href = "admin.html";
+                    loginLink.innerText = "Admin Panel";
+                    loginLink.classList.add("bg-[#003974]", "text-white"); // Admin Blue
+                } else {
+                    loginLink.href = "dashboard.html";
+                    loginLink.innerText = "My Dashboard";
+                    loginLink.classList.add("bg-secondary-container", "text-on-secondary-container"); // Tourist Orange
+                }
             }
         }
     }

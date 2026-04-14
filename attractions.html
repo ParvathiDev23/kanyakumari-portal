@@ -109,7 +109,7 @@
                     <span>08:00 AM - 04:00 PM</span>
                 </div>
                 <div class="mt-auto flex items-center gap-4">
-                    <a href="booking.html" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
+                    <a href="booking.html?vendor=Vivekananda%20Rock%20Memorial&category=Attraction" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
                     <button class="w-12 h-12 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
                         <span class="material-symbols-outlined">map</span>
                     </button>
@@ -127,7 +127,7 @@
                     <span>08:00 AM - 04:00 PM</span>
                 </div>
                 <div class="mt-auto flex items-center gap-4">
-                    <a href="booking.html" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
+                    <a href="booking.html?vendor=Thiruvalluvar%20Statue&category=Attraction" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
                     <button class="w-12 h-12 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
                         <span class="material-symbols-outlined">map</span>
                     </button>
@@ -145,7 +145,7 @@
                     <span>05:00 AM - 08:30 PM</span>
                 </div>
                 <div class="mt-auto flex items-center gap-4">
-                    <a href="booking.html" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
+                    <a href="booking.html?vendor=Our%20Lady%20of%20Ransom%20Church&category=Attraction" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
                     <button class="w-12 h-12 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
                         <span class="material-symbols-outlined">map</span>
                     </button>
@@ -167,7 +167,7 @@
                             <span>09:00 AM - 04:30 PM (Closed Monday)</span>
                         </div>
                         <div class="flex items-center gap-4">
-                            <a href="booking.html" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Explore Heritage</a>
+                            <a href="booking.html?vendor=Padmanabhapuram%20Palace&category=Attraction" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Explore Heritage</a>
                             <button class="w-12 h-12 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
                                 <span class="material-symbols-outlined">map</span>
                             </button>
@@ -187,7 +187,7 @@
                     <span>07:00 AM - 07:00 PM</span>
                 </div>
                 <div class="mt-auto flex items-center gap-4">
-                    <a href="booking.html" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
+                    <a href="booking.html?vendor=Gandhi%20Mandapam&category=Attraction" class="flex-1 text-center bg-primary text-on-primary py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">Book Tour</a>
                     <button class="w-12 h-12 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
                         <span class="material-symbols-outlined">map</span>
                     </button>
@@ -250,7 +250,7 @@
                 <input id="emailInput" class="bg-surface border-none rounded-lg px-4 py-3 text-sm flex-grow focus:ring-1 focus:ring-primary" placeholder="Email address" type="email"/>
                 <button id="subscribeBtn" class="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm">Join</button>
             </div>
-            <p class="text-[10px] text-on-surface-variant/50 mt-8">© 2024 The Horizon Observer. Inspired by the Laccadive Sea.</p>
+            <p class="text-[10px] text-on-surface-variant/50 mt-8">© 2026 The Horizon Observer. Inspired by the Laccadive Sea.</p>
         </div>
     </div>
 </footer>
@@ -291,13 +291,24 @@
             const { data: { user } } = await supabaseAuth.auth.getUser();
             
             if (user) {
-                // Find the Login link and change it to Dashboard
+                // 1. Check the user's role from local storage
+                const role = localStorage.getItem('portal_role');
                 const loginLinks = document.querySelectorAll('a[href="login.html"]');
+
                 loginLinks.forEach(link => {
-                    link.href = "dashboard.html";
-                    link.innerText = "My Dashboard";
-                    link.classList.add("bg-secondary-container", "text-on-secondary-container", "px-4", "py-2", "rounded-lg");
                     link.classList.remove("text-primary");
+                    link.classList.add("px-4", "py-2", "rounded-lg");
+
+                    // 2. Route them based on their role!
+                    if (role === 'admin') {
+                        link.href = "admin.html";
+                        link.innerText = "Admin Panel";
+                        link.classList.add("bg-[#003974]", "text-white"); // Blue theme for Admin
+                    } else {
+                        link.href = "dashboard.html";
+                        link.innerText = "My Dashboard";
+                        link.classList.add("bg-secondary-container", "text-on-secondary-container"); // Orange theme for Tourist
+                    }
                 });
             }
         }
